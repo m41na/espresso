@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-group = 'works.hop.demo.todo'
+group = 'works.hop.presso.demo'
 version = '1.0-SNAPSHOT'
 
 repositories {

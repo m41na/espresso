@@ -3,16 +3,20 @@ package works.hop.presso.jett.application;
 import works.hop.presso.api.application.AppSettings;
 import works.hop.presso.api.servable.StaticOptionsBuilder;
 import works.hop.presso.jett.Espresso;
+import works.hop.presso.jett.view.MvelViewEngine;
 
 import java.util.Map;
+
+import static works.hop.presso.jett.Espresso.express;
 
 public class Ex8AppStaticContent {
 
     public static void main(String[] args) {
-        var app = Espresso.express();
+        var app = express();
         app.set(AppSettings.Setting.TEMPLATES_DIR.property, "presso-jetty/view");
         app.set(AppSettings.Setting.VIEW_ENGINE.property, "mvel");
         app.set(AppSettings.Setting.TEMPLATES_EXT.property, ".mvel");
+//        app.engine(new MvelViewEngine("presso-jetty/view"), ".mvel");
         app.use(StaticOptionsBuilder.newBuilder().baseDirectory("presso-jetty/view").build());
         app.use("/home", StaticOptionsBuilder.newBuilder().baseDirectory("presso-jetty/view").build());
 

@@ -16,7 +16,13 @@ public class ViewEngineFactory {
 
         if (IViewEngine.MVEL.equals(name)) {
             IViewEngine viewEngine = factories.getOrDefault(name, new MvelViewEngine(templateDir));
-            factories.putIfAbsent(name, viewEngine);
+            register(name, viewEngine);
+            return viewEngine;
+        }
+
+        if(IViewEngine.PEBBLE.equals(name)){
+            IViewEngine viewEngine = factories.getOrDefault(name, new PebbleViewEngine(templateDir));
+            register(name, viewEngine);
             return viewEngine;
         }
 

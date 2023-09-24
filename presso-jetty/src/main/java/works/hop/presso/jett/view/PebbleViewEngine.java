@@ -24,6 +24,11 @@ public class PebbleViewEngine implements IViewEngine {
     }
 
     @Override
+    public String templateDir() {
+        return this.templateDir;
+    }
+
+    @Override
     public String mergeTemplate(String fileName, Map<String, Object> model) throws IOException {
         String filePath = Path.of(templateDir, fileName).toString();
         PebbleTemplate compiledTemplate = engine.getTemplate(filePath);

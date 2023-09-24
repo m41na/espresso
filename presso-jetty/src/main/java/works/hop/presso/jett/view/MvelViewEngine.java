@@ -21,6 +21,11 @@ public class MvelViewEngine implements IViewEngine {
     }
 
     @Override
+    public String templateDir() {
+        return this.templateDir;
+    }
+
+    @Override
     public String mergeTemplate(String fileName, Map<String, Object> model) {
         File file = Path.of(this.templateDir, fileName).toFile();
         CompiledTemplate compiled = TemplateCompiler.compileTemplate(file);

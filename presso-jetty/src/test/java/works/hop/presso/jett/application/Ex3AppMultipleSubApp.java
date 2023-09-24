@@ -1,19 +1,19 @@
 package works.hop.presso.jett.application;
 
-import works.hop.presso.jett.Espresso;
+import static works.hop.presso.jett.Espresso.express;
 
 public class Ex3AppMultipleSubApp {
 
     public static void main(String[] args) {
-        var app = Espresso.express();
+        var app = express();
 
-        var admin = Espresso.express();
+        var admin = express();
         admin.get("/", (req, res, next) -> {
             System.out.println(admin.mountPath());  // [ '/adm*n', '/manager' ]
             res.send("Admin Homepage");
         });
 
-        var secret = Espresso.express();
+        var secret = express();
         secret.get("/", (req, res, next) -> {
             System.out.println(secret.mountPath()); // '/secr*t'
             res.send("Admin Secret");

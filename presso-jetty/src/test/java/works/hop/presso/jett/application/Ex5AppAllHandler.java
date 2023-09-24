@@ -1,37 +1,42 @@
 package works.hop.presso.jett.application;
 
-import works.hop.presso.jett.Espresso;
+import works.hop.presso.api.middleware.IMiddleware;
+import works.hop.presso.api.middleware.INext;
+import works.hop.presso.api.request.IRequest;
+import works.hop.presso.api.response.IResponse;
+
+import static works.hop.presso.jett.Espresso.express;
 
 public class Ex5AppAllHandler {
 
     public static void main(String[] args) {
-        var app = Espresso.express();
+        var requireAuthentication = new IMiddleware() {
 
-        app.get("/", (req, res, next) -> res.send("hello world ex 5"));
-        app.locals().put("title", "My App");
+            @Override
+            public void handle(IRequest req, IResponse res, INext next) {
+                System.out.println("Authenticating user"); // Authenticating user
+                next.ok();
+            }
+        };
 
-        var admin = Espresso.express();
-        admin.get("/", (req, res, next) -> {
-            System.out.println(admin.mountPath());  // [ '/adm*n', '/manager' ]
+        var loadUser = new IMiddleware() {
+
+            @Override
+            public void handle(IRequest req, IResponse res, INext next) {
+                System.out.println("Loading user"); // Loading user
+                next.ok();
+            }
+        };
+
+        var app = express();
+
+//        app.all("/*", requireAuthentication, loadUser);
+        app.all("/*", requireAuthentication);
+        app.all("/*", loadUser);
+
+        app.get("/", (req, res, next) -> {
             res.send("All handler Homepage");
         });
-
-        app.all("/secret", (req, res, next) -> {
-            System.out.println("All methods for the secret section ...");
-            next.ok(); // pass control to the next handler
-        });
-
-        app.get("/secret", (req, res, next) -> {
-            System.out.println("get secret sections ...");
-            res.send("GET was successful");
-        });
-
-        app.post("/secret", (req, res, next) -> {
-            System.out.println("post secret sections ...");
-            res.send("POST was successful");
-        });
-
-        app.use("/adm*n", admin);
 
         app.listen(3000);
     }

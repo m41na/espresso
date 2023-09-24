@@ -9,7 +9,10 @@ import works.hop.presso.api.servable.IStaticOptions;
 import works.hop.presso.api.view.IViewEngine;
 import works.hop.presso.api.websocket.IWebsocketOptions;
 
+import java.io.IOException;
+import java.net.ServerSocket;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -31,9 +34,23 @@ public interface IApplication extends IRouter {
 
     boolean enabled(String setting);
 
-    void engine(String fileExt, IViewEngine engine);
+    void engine(IViewEngine engine, String fileExt);
 
     Object get(String setting);
+
+    default void listen() throws RuntimeException {
+        AtomicInteger port = new AtomicInteger();
+        try (ServerSocket serverSocket = new ServerSocket(0)) {
+            System.out.println("""
+                Any code using the port number returned by this method is subject to a race condition - a different\s
+                process/thread may bind to the same port immediately after the ServerSocket instance is closed.
+                """);
+            port.set(serverSocket.getLocalPort());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        listen(port.get());
+    }
 
     default void listen(int port) throws RuntimeException {
         listen("localhost", port, System.out::println);

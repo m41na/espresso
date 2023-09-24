@@ -57,7 +57,16 @@ public class ByPathRegex implements IRoutable {
 
     @Override
     public void store(String path, IMiddleware... handlers) {
-        all.put(path, handlers);
+        String key = path.replace("*", ".*");
+        if(all.get(key) != null) {
+            IMiddleware[] newArray = new IMiddleware[all.get(key).length + handlers.length];
+            System.arraycopy(all.get(key), 0, newArray, 0, all.get(key).length);
+            System.arraycopy(handlers, 0, newArray, all.get(key).length, handlers.length);
+            all.put(key, newArray);
+        }
+        else{
+            all.put(key, handlers);
+        }
     }
 
     @Override
