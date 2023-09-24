@@ -4,12 +4,15 @@ import works.hop.presso.jett.Espresso;
 
 import java.util.Map;
 
+import static works.hop.presso.jett.Espresso.json;
+import static works.hop.presso.jett.Espresso.urlEncoded;
+
 public class Ex10AppReadJsonOrFormData {
 
     public static void main(String[] args) {
         var app = Espresso.express();
-        app.use(Espresso.json());
-        app.use(Espresso.urlEncoded());
+        app.use(json());
+        app.use(urlEncoded());
 
         app.get("/json", (req, res, next) -> {
             Map<String, Object> json = Map.of("name", "Janie", "age", 23);

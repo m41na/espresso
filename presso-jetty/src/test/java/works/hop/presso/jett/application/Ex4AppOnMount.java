@@ -1,13 +1,13 @@
 package works.hop.presso.jett.application;
 
-import works.hop.presso.jett.Espresso;
+import static works.hop.presso.jett.Espresso.express;
 
 public class Ex4AppOnMount {
 
     public static void main(String[] args) {
-        var app = Espresso.express();
+        var app = express();
 
-        var admin = Espresso.express();
+        var admin = express();
         admin.on("mount", (parent) -> {
             System.out.println("Admin Mounted");
             System.out.printf("parent mountPath - /%s\n", parent.mountPath()); // refers to the parent app

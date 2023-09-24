@@ -108,8 +108,11 @@ public class Application extends Router implements IApplication, Cloneable {
     }
 
     @Override
-    public void engine(String fileExt, IViewEngine engine) {
-        ViewEngineFactory.register(fileExt, engine);
+    public void engine(IViewEngine engine, String fileExt) {
+        this.set(AppSettings.Setting.TEMPLATES_DIR.property, engine.templateDir());
+        this.set(AppSettings.Setting.VIEW_ENGINE.property, engine.name());
+        this.set(AppSettings.Setting.TEMPLATES_EXT.property, fileExt);
+        ViewEngineFactory.register(engine.name(), engine);
     }
 
     @Override
