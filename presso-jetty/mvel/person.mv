@@ -1,0 +1,6 @@
+@includeNamed{'headerTemplate'}
+
+This is a test template.
+
+My name is @{name}
+Age: @{age}

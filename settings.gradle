@@ -1,0 +1,4 @@
+rootProject.name = 'espresso'
+include 'presso-api'
+include 'presso-jetty'
+include 'presso-demo'
