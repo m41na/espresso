@@ -21,6 +21,7 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -72,20 +73,24 @@ public class Res implements IResponse {
 
     @Override
     public void cookie(String name, String value, CookieOptions options) {
-        this.response.addCookie(CookieBuilder.newBuilder(name, value, options).build());
+        this.response.addCookie(CookieBuilder.newBuilder(name, value, options)
+                .maxAge((TimeUnit) options.getOrDefault(CookieOptions.Option.TIME_UNIT, TimeUnit.MINUTES),
+                        (Integer) options.getOrDefault(CookieOptions.Option.MAX_AGE, 30))
+                .secure(false)
+                .build(request));
     }
 
     @Override
     public void clearCookie(String name) {
         Cookie cookie = new Cookie(name, null); // Not necessary, but saves bandwidth.
-        cookie.setMaxAge(0); // Don't set to -1 or it will become a session cookie!
+        cookie.setMaxAge(0); // Don't set to -1, or it will become a session cookie!
         this.response.addCookie(cookie);
     }
 
     @Override
     public void clearCookie(String name, CookieOptions options) {
-        Cookie cookie = CookieBuilder.newBuilder(name, null, options).build();
-        cookie.setMaxAge(0); // Don't set to -1 or it will become a session cookie!
+        Cookie cookie = CookieBuilder.newBuilder(name, null, options).build(request);
+        cookie.setMaxAge(0); // Don't set to -1, or it will become a session cookie!
         this.response.addCookie(cookie);
     }
 

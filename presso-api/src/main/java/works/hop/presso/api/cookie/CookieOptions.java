@@ -21,7 +21,8 @@ public class CookieOptions extends EnumMap<CookieOptions.Option, Object> {
         SIGNED("signed", "Indicates if the cookie should be signed."),
         SAME_SIGHT("sameSite", "Value of the 'SameSite' Set-Cookie attribute."),
         COMMENT("comment", "Value of the cookie's 'Comment'."),
-        VERSION("version", "Value of the cookie's 'Version'.");
+        VERSION("version", "Value of the cookie's 'Version'."),
+        TIME_UNIT("timeUnit", "input unit for time when specifying max age - defaults to MINUTES");
 
         final String name;
         final String description;

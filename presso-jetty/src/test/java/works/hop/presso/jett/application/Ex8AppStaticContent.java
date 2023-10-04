@@ -2,8 +2,6 @@ package works.hop.presso.jett.application;
 
 import works.hop.presso.api.application.AppSettings;
 import works.hop.presso.api.servable.StaticOptionsBuilder;
-import works.hop.presso.jett.Espresso;
-import works.hop.presso.jett.view.MvelViewEngine;
 
 import java.util.Map;
 

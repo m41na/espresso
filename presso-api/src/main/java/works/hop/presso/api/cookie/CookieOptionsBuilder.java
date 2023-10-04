@@ -1,9 +1,10 @@
 package works.hop.presso.api.cookie;
 
+import java.util.concurrent.TimeUnit;
+
 public class CookieOptionsBuilder {
 
     String domain;
-    Boolean encode;
     String expires;
     Boolean httpOnly = true;
     int maxAge;
@@ -16,6 +17,7 @@ public class CookieOptionsBuilder {
     String value;
     String comment;
     int version;
+    TimeUnit timeUnit;
 
     private CookieOptionsBuilder() {
         //hide constructor
@@ -30,11 +32,6 @@ public class CookieOptionsBuilder {
         return this;
     }
 
-    public CookieOptionsBuilder encode(Boolean encode) {
-        this.encode = encode;
-        return this;
-    }
-
     public CookieOptionsBuilder expires(String expires) {
         this.expires = expires;
         return this;
@@ -46,7 +43,13 @@ public class CookieOptionsBuilder {
     }
 
     public CookieOptionsBuilder maxAge(int maxAge) {
+        this.maxAge(maxAge, TimeUnit.MINUTES);
+        return this;
+    }
+
+    public CookieOptionsBuilder maxAge(int maxAge, TimeUnit timeUnit) {
         this.maxAge = maxAge;
+        this.timeUnit = timeUnit;
         return this;
     }
 
@@ -98,7 +101,6 @@ public class CookieOptionsBuilder {
     public CookieOptions build() {
         CookieOptions options = new CookieOptions();
         options.put(CookieOptions.Option.DOMAIN, this.domain);
-        options.put(CookieOptions.Option.ENCODE, this.encode);
         options.put(CookieOptions.Option.EXPIRES, this.expires);
         options.put(CookieOptions.Option.HTTP_ONLY, this.httpOnly);
         options.put(CookieOptions.Option.MAX_AGE, this.maxAge);
@@ -109,6 +111,7 @@ public class CookieOptionsBuilder {
         options.put(CookieOptions.Option.SAME_SIGHT, this.sameSite);
         options.put(CookieOptions.Option.COMMENT, this.comment);
         options.put(CookieOptions.Option.VERSION, this.version);
+        options.put(CookieOptions.Option.TIME_UNIT, this.timeUnit);
         return options;
     }
 }

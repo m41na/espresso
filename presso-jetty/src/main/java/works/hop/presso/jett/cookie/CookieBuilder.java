@@ -1,24 +1,71 @@
 package works.hop.presso.jett.cookie;
 
 import jakarta.servlet.http.Cookie;
+import org.eclipse.jetty.server.Request;
 import works.hop.presso.api.cookie.CookieOptions;
+
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+
+import static java.util.Objects.requireNonNull;
 
 public class CookieBuilder {
 
     String domain;
-    Boolean encode;
+    Function<Request, String> domainResolver = request -> {
+        if (this.domain == null) {
+            return request.getRemoteHost();
+        }
+        return this.domain;
+    };
     String expires;
-    Boolean httpOnly = true;
-    int maxAge;
+    Function<Integer, String> expiresResolver = current -> {
+        if (this.expires == null) {
+            Date expiry = new Date();
+            expiry.setTime(expiry.getTime() + (current * 60 * 1000)); //30 minutes
+            DateFormat format = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzzz");
+            format.setTimeZone(TimeZone.getTimeZone("GMT"));
+            return format.format(expiry);
+        }
+        return this.expires;
+    };
+    Integer maxAge;
+    BiFunction<TimeUnit, Integer, Integer> maxAgeResolver = (timeUnit, duration) -> {
+        if (this.maxAge == null) {
+            return (int) timeUnit.convert(duration, TimeUnit.MICROSECONDS);
+        }
+        return this.maxAge;
+    };
     String path;
+    Function<String, String> urlEncoder = current -> {
+        if (this.path == null) {
+            return URLEncoder.encode(current, StandardCharsets.UTF_8);
+        }
+        return this.path;
+    };
+    Function<Request, String> pathResolver = (req) -> {
+        if (this.path == null) {
+            return req.getPathInfo();
+        }
+        return urlEncoder.apply(this.path);
+    };
+    Boolean httpOnly;
     String priority;
-    Boolean secure = true;
+    Boolean secure;
     Boolean signed;
     String sameSite;
     String name;
     String value;
     String comment;
-    int version;
+    Integer version;
+    TimeUnit timeUnit;
 
     private CookieBuilder() {
         //hide constructor
@@ -28,18 +75,17 @@ public class CookieBuilder {
         CookieBuilder bld = new CookieBuilder();
         bld.name(name);
         bld.value(value);
-        bld.domain((String) options.computeIfAbsent(CookieOptions.Option.DOMAIN, x -> "localhost"));
-        bld.encode((Boolean) options.computeIfAbsent(CookieOptions.Option.ENCODE, x -> false));
-        bld.expires((String) options.computeIfAbsent(CookieOptions.Option.EXPIRES, x -> "0"));
-        bld.httpOnly((Boolean) options.computeIfAbsent(CookieOptions.Option.HTTP_ONLY, x -> true));
-        bld.maxAge((int) options.computeIfAbsent(CookieOptions.Option.MAX_AGE, x -> 0));
+        bld.domain((String) options.get(CookieOptions.Option.DOMAIN));
+        bld.expires((String) options.get(CookieOptions.Option.EXPIRES));
+        bld.maxAge(bld.timeUnit, (int) options.get(CookieOptions.Option.MAX_AGE));
         bld.path((String) options.get(CookieOptions.Option.PATH));
-        bld.priority((String) options.computeIfAbsent(CookieOptions.Option.PRIORITY, x -> ""));
-        bld.secure((Boolean) options.computeIfAbsent(CookieOptions.Option.SECURE, x -> true));
-        bld.signed((Boolean) options.computeIfAbsent(CookieOptions.Option.SIGNED, x -> false));
-        bld.sameSite((String) options.computeIfAbsent(CookieOptions.Option.SAME_SIGHT, x -> ""));
-        bld.comment((String) options.computeIfAbsent(CookieOptions.Option.COMMENT, x -> ""));
-        bld.version((int) options.computeIfAbsent(CookieOptions.Option.VERSION, x -> 1));
+        bld.httpOnly((Boolean) options.get(CookieOptions.Option.HTTP_ONLY));
+        bld.priority((String) options.get(CookieOptions.Option.PRIORITY));
+        bld.secure((Boolean) options.get(CookieOptions.Option.SECURE));
+        bld.signed((Boolean) options.get(CookieOptions.Option.SIGNED));
+        bld.sameSite((String) options.get(CookieOptions.Option.SAME_SIGHT));
+        bld.comment((String) options.get(CookieOptions.Option.COMMENT));
+        bld.version((int) options.get(CookieOptions.Option.VERSION));
         return bld;
     }
 
@@ -48,28 +94,24 @@ public class CookieBuilder {
         return this;
     }
 
-    public CookieBuilder encode(Boolean encode) {
-        this.encode = encode;
-        return this;
-    }
-
     public CookieBuilder expires(String expires) {
         this.expires = expires;
         return this;
     }
 
-    public CookieBuilder httpOnly(Boolean httpOnly) {
-        this.httpOnly = httpOnly;
-        return this;
-    }
-
-    public CookieBuilder maxAge(int maxAge) {
+    public CookieBuilder maxAge(TimeUnit timeUnit, int maxAge) {
+        this.timeUnit = timeUnit;
         this.maxAge = maxAge;
         return this;
     }
 
     public CookieBuilder path(String path) {
         this.path = path;
+        return this;
+    }
+
+    public CookieBuilder httpOnly(Boolean httpOnly) {
+        this.httpOnly = httpOnly;
         return this;
     }
 
@@ -113,15 +155,25 @@ public class CookieBuilder {
         return this;
     }
 
-    public Cookie build() {
-        Cookie cookie = new Cookie(this.name, this.value);
-        cookie.setPath(this.path);
-        cookie.setHttpOnly(this.httpOnly);
-        cookie.setMaxAge(this.maxAge);
-        cookie.setComment(this.comment);
-        cookie.setDomain(this.domain);
-        cookie.setSecure(this.secure);
-        cookie.setVersion(this.version);
+    public Cookie build(Request request) {
+        Cookie cookie = new Cookie(
+                requireNonNull(this.name, "Cookie name is a required attribute"),
+                requireNonNull(this.value, "Cookie value is a required attribute"));
+        cookie.setPath(pathResolver.apply(request));
+        cookie.setDomain(this.domainResolver.apply(request));
+        cookie.setMaxAge(maxAgeResolver.apply(TimeUnit.MINUTES, this.maxAge));
+        if (this.httpOnly != null) {
+            cookie.setHttpOnly(this.httpOnly);
+        }
+        if (this.comment != null) {
+            cookie.setComment(this.comment);
+        }
+        if (this.secure != null) {
+            cookie.setSecure(this.secure);
+        }
+        if (this.version != null) {
+            cookie.setVersion(this.version);
+        }
         return cookie;
     }
 }
