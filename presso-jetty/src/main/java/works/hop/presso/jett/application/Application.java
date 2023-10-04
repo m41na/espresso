@@ -6,7 +6,6 @@ import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.websocket.server.JettyWebSocketCreator;
 import org.eclipse.jetty.websocket.server.config.JettyWebSocketServletContainerInitializer;
 import works.hop.presso.api.application.AppSettings;
 import works.hop.presso.api.application.CorsOptions;
@@ -19,6 +18,7 @@ import works.hop.presso.api.router.IRouter;
 import works.hop.presso.api.servable.IStaticOptions;
 import works.hop.presso.api.view.IViewEngine;
 import works.hop.presso.api.websocket.IWebsocketOptions;
+import works.hop.presso.api.websocket.WebsocketHandlerCreator;
 import works.hop.presso.jett.Espresso;
 import works.hop.presso.jett.config.ConfigMap;
 import works.hop.presso.jett.config.DefaultConfigLoader;
@@ -26,6 +26,7 @@ import works.hop.presso.jett.content.BodyParserFactory;
 import works.hop.presso.jett.handler.CorsHandler;
 import works.hop.presso.jett.router.Router;
 import works.hop.presso.jett.view.ViewEngineFactory;
+import works.hop.presso.jett.websocket.WebSocketListenerCreator;
 
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -235,7 +236,7 @@ public class Application extends Router implements IApplication, Cloneable {
     }
 
     @Override
-    public void websocket(String contextPath, Object creator, IWebsocketOptions options) {
+    public void websocket(String contextPath, IWebsocketOptions options, Consumer<WebsocketHandlerCreator<?>> creator) {
         ServletContextHandler websocketHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
         websocketHandler.setContextPath(contextPath);
 
@@ -244,7 +245,18 @@ public class Application extends Router implements IApplication, Cloneable {
             container.setMaxTextMessageSize(options.maxBufferSize());
 
             // Add websockets
-            container.addMapping(options.websocketPath(), (JettyWebSocketCreator) creator);
+            container.addMapping(options.websocketPath(), (upgradeRequest, upgradeResponse) -> {
+
+                //possible to inspect upgrade request and modify upgrade response
+                upgradeResponse.setAcceptedSubProtocol(options.subProtocols().get(0));
+
+                //provider a builder for websocket endpoints
+                WebSocketListenerCreator handlerCreator = new WebSocketListenerCreator();
+                creator.accept(handlerCreator);
+
+                //return a websocket endpoint
+                return handlerCreator.build();
+            });
         });
 
         assert getCtxHandlers() != null;

@@ -8,6 +8,7 @@ import works.hop.presso.api.router.IRouter;
 import works.hop.presso.api.servable.IStaticOptions;
 import works.hop.presso.api.view.IViewEngine;
 import works.hop.presso.api.websocket.IWebsocketOptions;
+import works.hop.presso.api.websocket.WebsocketHandlerCreator;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -42,9 +43,9 @@ public interface IApplication extends IRouter {
         AtomicInteger port = new AtomicInteger();
         try (ServerSocket serverSocket = new ServerSocket(0)) {
             System.out.println("""
-                Any code using the port number returned by this method is subject to a race condition - a different\s
-                process/thread may bind to the same port immediately after the ServerSocket instance is closed.
-                """);
+                    Any code using the port number returned by this method is subject to a race condition - a different\s
+                    process/thread may bind to the same port immediately after the ServerSocket instance is closed.
+                    """);
             port.set(serverSocket.getLocalPort());
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -90,5 +91,5 @@ public interface IApplication extends IRouter {
 
     void use(IErrorHandler... handlers);
 
-    void websocket(String contextPath, Object creator, IWebsocketOptions options);
+    void websocket(String contextPath, IWebsocketOptions options, Consumer<WebsocketHandlerCreator<?>> creator);
 }

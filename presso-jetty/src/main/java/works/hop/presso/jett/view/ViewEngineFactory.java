@@ -20,7 +20,7 @@ public class ViewEngineFactory {
             return viewEngine;
         }
 
-        if(IViewEngine.PEBBLE.equals(name)){
+        if (IViewEngine.PEBBLE.equals(name)) {
             IViewEngine viewEngine = factories.getOrDefault(name, new PebbleViewEngine(templateDir));
             register(name, viewEngine);
             return viewEngine;

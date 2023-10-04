@@ -6,62 +6,62 @@ of using Java can not sufficiently accommodate the succinctness or brevity of Ja
 
 These core abstractions are:
 
-| Express js  | Espresso jetty |
+| Express.js  | Espresso jetty |
 |-------------|----------------|
 | express()   | Espresso       |
 | Application | IApplication   |
-| Request     | IResponse      |
+| Request     | IRequest       |
 | Response    | IResponse      |
-| Router      | IRouter        |
+| Router      | IRouter        | 
 
 ## Espresso
 
 > A container for static functions. It cannot be instantiated, and so it cannot hold instance variables.
 
-### IApplication express()
+##### IApplication express()
 
 static function which returns an instance of IApplication (which also extends IRouter) that can be used as an entry
 point when starting the server - You can add middleware and HTTP method routes (such as get, put, post, and so on).
 
-### IBodyParser json()
+##### IBodyParser json()
 
 static function which handles application/json content - Returns middleware that only parses JSON and only looks at
 requests where the Content-Type header matches the type option. It is registered with an application using it
 __use(IBodyParser)__ function
 
-### IBodyParser raw()
+##### IBodyParser raw()
 
 static function which handles raw bytes, application/octet-stream content - Returns middleware that parses all bodies
 as a byte[] array and only looks at requests where the Content-Type header matches the type option. It is registered
 with an application using it __use(IBodyParser)__ function
 
-### IBodyParser text()
+##### IBodyParser text()
 
 static function which handles text/plain content - Returns middleware that parses all bodies as a string and only looks
 at requests where the Content-Type header matches the type option. It is registered with an application using it
 __use(IBodyParser)__ function
 
-### IBodyParser urlEncoded()
+##### IBodyParser urlEncoded()
 
 static function which handles x-www-form-urlencoded encoded content - Returns middleware that only parses urlencoded
 bodies and only looks at requests where the Content-Type header matches the type option. It is registered with an
 application using it __use(IBodyParser)__ function
 
-### IBodyParser multipart(String location, long maxFileSize, long maxRequestSize, int fileSizeThreshold)
+##### IBodyParser multipart(String location, long maxFileSize, long maxRequestSize, int fileSizeThreshold)
 
 static function which handles multipart/form-data encoded content - Returns middleware that only parses multipart bodies
 and only looks at requests where the Content-Type header matches the type option. It is registered with an application
 using it __use(IBodyParser)__ function
 
-### ResourceHandler staticFiles(IStaticOptions options)
+##### ResourceHandler staticFiles(IStaticOptions options)
 
 static function configures a static resources loader without a context path
 
-### ContextHandler staticFiles(String context, IStaticOptions options)
+##### ContextHandler staticFiles(String context, IStaticOptions options)
 
 static function configures a static resources loader for a given a context path
 
-### void startServer(String host, int port, Consumer<String> callback, IApplication entryApp)
+##### void startServer(String host, int port, Consumer<String> callback, IApplication entryApp)
 
 static function starts the server using a given entry IApplication instance
 
@@ -89,7 +89,7 @@ The app object has methods for
 4. Registering a template engine; see app.engine.
 5. It also has settings (properties) that affect how the application behave
 
-### Map<String, Object> locals()
+##### Map<String, Object> locals()
 
 The app.locals() object has properties that are local variables within the application, and will be available in
 templates rendered with res.render.
@@ -105,7 +105,7 @@ println(app.locals().get('email'))
 // => 'me@myapp.com'
 ```
 
-### String mountPath();
+##### String mountPath();
 
 The app.mountPath() property contains one or more path patterns on which a sub-app was mounted.
 
@@ -124,9 +124,10 @@ public static void main(String[] args) {
 }
 ```
 
-### void on(String event, Consumer<IApplication> subscriber);
+##### void on(String event, Consumer<IApplication> subscriber);
 
-The mount event is fired on a sub-app, when it is mounted on a parent app. The parent app is passed to the callback function.
+The mount event is fired on a sub-app, when it is mounted on a parent app. The parent app is passed to the callback
+function.
 
 ```bash
 public static void main(String[] args) {
@@ -148,7 +149,7 @@ public static void main(String[] args) {
 }
 ```
 
-### void all(String path, IMiddleware... middlewares);
+#### void all(String path, IMiddleware... middlewares);
 
 This method is like the standard app.METHOD() methods, except it matches all HTTP verbs.
 
@@ -163,6 +164,7 @@ An array of combinations of any of the above.
 - middlewares
 
 IMiddleware functions; can be:
+
 - A middleware function.
 - A series of middleware functions (separated by commas).
 
@@ -205,12 +207,12 @@ app.all("/*", requireAuthentication)
 app.all("/*", loadUser)
 ```
 
-Another example is white-listed “global” functionality. The example is similar to the ones above, but it only restricts 
+Another example is white-listed “global” functionality. The example is similar to the ones above, but it only restricts
 paths that start with “/api”:
 
 app.all("/api/*", requireAuthentication)
 
-### void delete(String path, IMiddleware... middlewares);
+#### void delete(String path, IMiddleware... middlewares);
 
 Routes HTTP DELETE requests to the specified path with the specified middleware functions.
 
@@ -225,6 +227,7 @@ An array of combinations of any of the above.
 - middlewares
 
 IMiddleware functions; can be:
+
 - A middleware function.
 - A series of middleware functions (separated by commas).
 
@@ -234,7 +237,7 @@ app.delete("/", (req, res, next) {
 })
 ```
 
-### void disable(String setting)
+#### void disable(String setting)
 
 Sets the Boolean setting name to false, where name is one of the properties from the app settings
 
@@ -244,7 +247,7 @@ app.get("my-property")
 // => false
 ```
 
-### boolean disabled(String setting)
+#### boolean disabled(String setting)
 
 Returns true if the Boolean setting name is disabled (false), where name is one of the properties from the app settings
 
@@ -257,9 +260,9 @@ app.disabled("my-property")
 // => false
 ```
 
-### void enable(String setting)
+#### void enable(String setting)
 
-Sets the Boolean setting name to true, where name is one of the properties from the app settings 
+Sets the Boolean setting name to true, where name is one of the properties from the app settings
 
 ```bash
 app.enable("my-property")
@@ -267,7 +270,7 @@ app.get("my-property")
 // => true
 ```
 
-### boolean enabled(String setting)
+#### boolean enabled(String setting)
 
 Returns true if the setting name is enabled (true), where name is one of the properties from the app settings
 
@@ -280,7 +283,7 @@ app.enabled("my-property")
 // => true
 ```
 
-### void engine(String fileExt, IViewEngine engine)
+#### void engine(String fileExt, IViewEngine engine)
 
 Registers the given template engine callback for a given file type. You can do it in one of two ways
 
@@ -299,7 +302,7 @@ or simply
 
 Currently, Espresso only ships with two default view libraries - MVEL and PEBBLE
 
-### Object get(String setting)
+#### Object get(String setting)
 
 Returns the value of name app setting, where name is one of the strings in the app settings
 
@@ -312,7 +315,7 @@ app.get("title")
 // => "My Site"
 ```
 
-### void get(String path, IMiddleware... middlewares);
+#### void get(String path, IMiddleware... middlewares);
 
 Routes HTTP GET requests to the specified path with the specified callback functions.
 
@@ -327,6 +330,7 @@ An array of combinations of any of the above.
 - middlewares
 
 IMiddleware functions; can be:
+
 - A middleware function.
 - A series of middleware functions (separated by commas).
 
@@ -336,14 +340,16 @@ app.get("/",  (req, res, next) {
 })
 ```
 
-### void listen()
-### void listen(int port)
-### void listen(String host, int port, Consumer<String> callback)
+#### void listen()
+
+#### void listen(int port)
+
+#### void listen(String host, int port, Consumer<String> callback)
 
 Binds and listens for connections on the specified host and port.
 
-If port is omitted or is 0, the operating system will assign an arbitrary unused port, which is useful for cases like 
-automated tasks. Please beware that any code using the port number returned by this method is subject to a race 
+If port is omitted or is 0, the operating system will assign an arbitrary unused port, which is useful for cases like
+automated tasks. Please beware that any code using the port number returned by this method is subject to a race
 condition - a different process/thread may bind to the same port immediately after the ServerSocket instance is closed.
 
 If host is omitted, then localhost will be implied and used
@@ -353,10 +359,11 @@ var app = express()
 app.listen(3000)
 ```
 
-### void method(String name, String path, IMiddleware... middlewares)
+#### void method(String name, String path, IMiddleware... middlewares)
 
-Routes an HTTP request, where METHOD is the HTTP method of the request, such as GET, PUT, POST, and DELETE, in lowercase. 
-Thus, the actual methods are app.get(), app.post(), app.put(), and app.delete(). 
+Routes an HTTP request, where METHOD is the HTTP method of the request, such as GET, PUT, POST, and DELETE, in
+lowercase.
+Thus, the actual methods are app.get(), app.post(), app.put(), and app.delete().
 
 - path
 
@@ -369,14 +376,16 @@ An array of combinations of any of the above.
 - middlewares
 
 IMiddleware functions; can be:
+
 - A middleware function.
 - A series of middleware functions (separated by commas).
 
-### void param(String param, IParamCallback callback)
-### void param(String[] params, IParamCallback callback)
+#### void param(String param, IParamCallback callback)
 
-Add callback triggers to route parameters, where name is the name of the parameter or an array of them, and callback is 
-the callback function. The parameters of the callback function are the request object, the response object, the next 
+#### void param(String[] params, IParamCallback callback)
+
+Add callback triggers to route parameters, where name is the name of the parameter or an array of them, and callback is
+the callback function. The parameters of the callback function are the request object, the response object, the next
 middleware, the value of the parameter and the name of the parameter, in that order.
 
 ```bash
@@ -393,11 +402,11 @@ public static void main(String[] args) {
 }
 ```
 
-### void properties(String file)
+#### void properties(String file)
 
 Loads properties externalized in a file into the app's default config for use by different parts of the application.
 
-### void post(String path, IMiddleware... middlewares)
+#### void post(String path, IMiddleware... middlewares)
 
 Routes HTTP POST requests to the specified path with the specified callback functions.
 
@@ -412,10 +421,11 @@ An array of combinations of any of the above.
 - middlewares
 
 IMiddleware functions; can be:
+
 - A middleware function.
 - A series of middleware functions (separated by commas).
 
-### void put(String path, IMiddleware... middlewares)
+#### void put(String path, IMiddleware... middlewares)
 
 Routes HTTP PUT requests to the specified path with the specified callback functions.
 
@@ -430,13 +440,14 @@ An array of combinations of any of the above.
 - middlewares
 
 IMiddleware functions; can be:
+
 - A middleware function.
 - A series of middleware functions (separated by commas).
 
-### void render(String viewName, BiConsumer<Exception, String> callback)
+#### void render(String viewName, BiConsumer<Exception, String> callback)
 
-Returns the rendered HTML of a view via the callback function. It accepts an optional parameter that is an object 
-containing local variables for the view. It is like res.render(), except it cannot send the rendered view to the client 
+Returns the rendered HTML of a view via the callback function. It accepts an optional parameter that is an object
+containing local variables for the view. It is like res.render(), except it cannot send the rendered view to the client
 on its own.
 
 It's actually used by the IResponse instance to generate content, which then the IResponse instance send to the client
@@ -450,12 +461,12 @@ public void render(String viewName, Map<String, Object> context, BiConsumer<Exce
 }
 ```
 
-### IRouter route(String contextPath)
+#### IRouter route(String contextPath)
 
-Returns an instance of a single route, which you can then use to handle HTTP verbs with optional middleware. 
+Returns an instance of a single route, which you can then use to handle HTTP verbs with optional middleware.
 Use app.route() to avoid duplicate route names (and thus typo errors).
 
-When using app.route(), do NOT mount it manually as a sub-app. It will mount itself during creation to the parent app 
+When using app.route(), do NOT mount it manually as a sub-app. It will mount itself during creation to the parent app
 used to create it
 
 ```bash
@@ -474,20 +485,21 @@ app.route("/events")
   })
 ```
 
-### void set(String setting, Object value)
+#### void set(String setting, Object value)
 
-Assigns setting name to value. You may store any value that you want, but certain names can be used to configure the 
-behavior of the server. 
+Assigns setting name to value. You may store any value that you want, but certain names can be used to configure the
+behavior of the server.
 
 ```bash
 app.set("title", "My Site")
 app.get("title") // "My Site"
 ```
 
-### void use(IMiddleware... handlers)
-### void use(String path, IMiddleware... handlers)
+#### void use(IMiddleware... handlers)
 
-Mounts the specified middleware function or functions at the specified path: the middleware function is executed when 
+#### void use(String path, IMiddleware... handlers)
+
+Mounts the specified middleware function or functions at the specified path: the middleware function is executed when
 the base of the requested path matches path.
 
 ```bash
@@ -508,7 +520,7 @@ public static void main(String[] args) {
 }
 ```
 
-### void use(CorsOptions options);
+#### void use(CorsOptions options);
 
 Configure CORS options when using cross domain clients
 
@@ -517,8 +529,9 @@ Configure CORS options when using cross domain clients
     app.use(new CorsOptions());
 ```
 
-### void use(String usePath, IApplication subApp)
-### void use(String[] usePaths, IApplication subApp)
+#### void use(String usePath, IApplication subApp)
+
+#### void use(String[] usePaths, IApplication subApp)
 
 Mounts the specified applications at the specified mount paths: the sub-application is used to routes a request when
 the base of the requested path matches path.
@@ -551,9 +564,9 @@ public static void main(String[] args) {
 }
 ```
 
-### void use(IBodyParser bodyParser)
+#### void use(IBodyParser bodyParser)
 
-Registers the specified body parse implementation with the corresponding factory for use in the application. The 
+Registers the specified body parse implementation with the corresponding factory for use in the application. The
 respective parse is used when the content type header type is matched in the handler middleware
 
 ```bash
@@ -570,11 +583,12 @@ public static void main(String[] args) {
     }
 ```
 
-### void use(IStaticOptions options)
-### void use(String path, IStaticOptions options)
+#### void use(IStaticOptions options)
 
-Configures the respective static content request handlers with the respective application, at the application's mount 
-path or relative to the mount path 
+#### void use(String path, IStaticOptions options)
+
+Configures the respective static content request handlers with the respective application, at the application's mount
+path or relative to the mount path
 
 ```bash
 public static void main(String[] args) {
@@ -597,9 +611,9 @@ public static void main(String[] args) {
     }
 ```
 
-### void use(IErrorHandler... handlers)
+#### void use(IErrorHandler... handlers)
 
-Registers custom error handling middleware with the application. A default error handler is used to suppress the stack 
+Registers custom error handling middleware with the application. A default error handler is used to suppress the stack
 trace generated by application errors, and simply prints the message.
 
 A use is encouraged to register their custom error handlers, which can be targeted by using an error code
@@ -627,7 +641,7 @@ public static void main(String[] args) {
 }
 ```
 
-### void websocket(String contextPath, Object creator, IWebsocketOptions options)
+##### void websocket(String contextPath, Object creator, IWebsocketOptions options)
 
 Registers a web socket handler which will connect and communicate with web socket clients
 
@@ -635,8 +649,213 @@ Registers a web socket handler which will connect and communicate with web socke
 public static void main(String[] args) {
     var app = express();
     app.use(StaticOptionsBuilder.newBuilder().baseDirectory("presso-jetty/view").welcomeFiles("websocket.html").build());
-    app.websocket("/", new Ex13AppEndpointCreator(), WebsocketOptionsBuilder.newBuilder().websocketPath("/events/*").build());
+    app.websocket("/ws/", WebsocketOptionsBuilder.newBuilder().websocketPath("/events/*").build(), (ws) -> {
 
-    app.listen(8080);
+        ws.onConnect(session -> {
+            Session sess = (Session) session;
+            System.out.println("Socket connected: " + session);
+            try {
+                sess.getRemote().sendString("Connection accepted");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        ws.onClose((status, reason) -> System.out.printf("Socket closing: %d, %s\n", status, reason));
+
+        ws.onMessage((session, message) -> {
+            System.out.println("Received TXT message: " + message);
+            if (message.toLowerCase(Locale.ENGLISH).contains("bye")) {
+                ((Session) session).close();
+            }
+        });
+
+        ws.onError(cause -> cause.printStackTrace(System.err));
+    });
+
+    app.listen(8090);
+}
+```
+
+## IRequest
+
+The req object represents the HTTP request and has properties for the request query string, parameters, body,
+HTTP headers, and so on. In this documentation and by convention, the object is always referred to as req (and the HTTP
+response is res) but its actual name is determined by the parameters to the callback function in which you’re working.
+
+For example:
+
+```bash
+app.get("/user/:id", (req, res) {
+  res.send("user " + req.params.id)
+})
+```
+
+But you could just as well have:
+
+```bash
+app.get("/user/:id", function (request, response) {
+  response.send("user " + request.params.id)
+})
+```
+
+#### IApplication app()
+
+This function returns a reference to the instance of the Express application that is using the middleware.
+
+```bash
+static IMiddleware middleware = (req, res, next) -> {
+    res.send("The views directory is " + req.app().get("templates dir"));
+    //expect - The views directory is my-view-folder
+};
+
+public static void main(String[] args) {
+    var app = express();
+
+    app.set(AppSettings.Setting.TEMPLATES_DIR.property, "my-view-folder");
+    app.get("/", middleware);
+
+    app.listen(3000);
+}
+```
+
+#### String baseUrl()
+
+The context path on which a application instance was mounted.
+
+```bash
+public static void main(String[] args) {
+    var app = express();
+
+    var greet = app.route("/greet");
+
+    greet.get("/jp", (req, res, next) -> {
+        System.out.println(req.baseUrl()); // /greet
+        res.send("Konichiwa!");
+    });
+    
+    var greet2 = express();
+
+    greet2.get("/swa", (req, res, next) -> {
+        System.out.println(req.baseUrl()); // /greet2
+        res.send("Shikamoo!");
+    });
+
+    app.use("/greet2", greet2);
+
+    app.listen(3000);
+}
+```
+
+#### Map<String, Object> body()
+
+Contains key-value pairs of data submitted in the request body. By default, it is undefined, and is populated when you
+use body-parsing middleware such as express.json() or express.urlencoded().
+
+```bash
+public static void main(String[] args) {
+    var app = Espresso.express();
+    app.use(json());
+    app.use(urlEncoded());
+
+    app.get("/json", (req, res, next) -> {
+        Map<String, Object> json = Map.of("name", "Janie", "age", 23);
+        System.out.println(json);
+        res.json(json);
+    });
+
+    app.get("/json", (req, res, next) -> {
+        Map<String, Object> json = Map.of("name", "Janie", "age", 23);
+        System.out.println(json);
+        res.json(json);
+    });
+
+    app.post("/json", (req, res, next) -> {
+        Map<String, Object> json = req.body();
+        System.out.println(json);
+        res.json(json);
+    });
+
+    app.post("/form", (req, res, next) -> {
+        Map<String, Object> json = req.body();
+        System.out.println(json);
+        res.json(json);
+    });
+
+    app.listen(3000);
+}
+```
+
+#### <T> T body(Function<byte[], T> converter)
+
+Turns over request bytes to custom converter for user-defined conversion to desired type
+
+> curl -X POST http://localhost:3000/string/ -H "Content-Type: text/plain" -d "Some cool stuff"
+
+```bash
+public static void main(String[] args) {
+    var app = express();
+    app.use(new PlainTextBodyParser());
+    
+    var greet = app.route("/");
+    
+    greet.post("/string", (req, res, next) -> {
+        String plainText = req.body(String::new);
+        res.send(plainText); // expect: Some cool stuff
+    });
+    
+    app.listen(3000);
+}
+```
+
+#### void upload()
+
+Upload content to a designated directory configured through application properties
+
+```bash
+public static void main(String[] args) {
+    var app = express();
+    app.properties("app-default.yaml"); // load application configuration properties made available in Config Map
+    app.use("/upload", StaticOptionsBuilder.newBuilder().baseDirectory("presso-jetty/view").welcomeFiles("upload.html").build());
+    app.use(multipart(
+            System.getProperty("java.io.tmpdir"),
+            ((Application) app).getAppConfig().get(ConfigMap.MULTIPART_CONFIG, MultipartConfig.class).getMaxFileSize(),
+            ((Application) app).getAppConfig().get(ConfigMap.MULTIPART_CONFIG, MultipartConfig.class).getMaxRequestSize(),
+            ((Application) app).getAppConfig().get(ConfigMap.MULTIPART_CONFIG, MultipartConfig.class).getFileSizeThreshold()));
+
+    app.get("/", (req, res, next) -> {
+        res.send("Hello, trying to upload");
+    });
+
+    app.post("/some", (req, res, next) -> {
+        req.upload(); //this should upload content
+        res.sendStatus(201);
+    });
+
+    app.listen(3000);
+}
+```
+
+#### ReqCookies cookies()
+
+When using cookie-parser middleware, this property is an object that contains cookies sent by the request. If the
+request contains no cookies, it defaults to {}.
+
+```bash
+public static void main(String[] args) {
+    var app = express();
+
+    app.get("/", (req, res, next) -> {
+        CookieOptions cookieOptions = CookieOptionsBuilder.newBuilder().build();
+        res.cookie("monster", "frankenstein", cookieOptions);
+        res.send("hello cookies example");
+    });
+    
+    app.get("/cookie", (req, res, next) -> {
+        res.
+        res.send("hello cookies example");
+    });
+
+    app.listen(3000);
 }
 ```
