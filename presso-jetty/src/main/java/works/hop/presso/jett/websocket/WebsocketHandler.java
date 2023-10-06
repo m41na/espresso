@@ -48,7 +48,7 @@ public class WebsocketHandler extends WebSocketAdapter implements IWebsocketHand
     }
 
     @Override
-    public void onMessage(String message) {
+    public void onMessage(Session session, String message) {
         //delegate to IWebsocketHandler
         this.onWebSocketText(message);
     }

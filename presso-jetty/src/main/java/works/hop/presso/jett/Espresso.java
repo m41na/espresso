@@ -22,6 +22,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -35,7 +37,8 @@ public class Espresso {
     private static final ConfigMap configMap = new ConfigMap();
     private static final AppSettings settings = new AppSettings();
     private static final ContextHandlerCollection ctxHandlers = new ContextHandlerCollection();
-    private static final HandlerList handlersList = new HandlerList();
+    private static final HandlerList handlerList = new HandlerList();
+    private static final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
     private Espresso() {
         //hidden
@@ -44,6 +47,7 @@ public class Espresso {
     public static IApplication express() {
 
         return new Application() {
+
             @Override
             public AppSettings getSettings() {
                 return settings;
@@ -55,13 +59,18 @@ public class Espresso {
             }
 
             @Override
-            public HandlerList getHandlersList() {
-                return handlersList;
+            public HandlerList getHandlerList() {
+                return handlerList;
             }
 
             @Override
             public ConfigMap getAppConfig() {
                 return configMap;
+            }
+
+            @Override
+            public ScheduledExecutorService getExecutorService() {
+                return scheduler;
             }
         };
     }
@@ -128,6 +137,7 @@ public class Espresso {
             QueuedThreadPool threadPool = new QueuedThreadPool();
             threadPool.setName(SERVER_NAME);
             Server server = new Server(threadPool);
+            Runtime.getRuntime().addShutdownHook(new Thread(scheduler::shutdown));
 
             // The HTTP configuration object.
             HttpConfiguration httpConfig = new HttpConfiguration();
@@ -158,13 +168,13 @@ public class Espresso {
             }
 
             // add ContextHandlerCollection to handler list
-            handlersList.addHandler(ctxHandlers);
+            handlerList.addHandler(ctxHandlers);
 
             // set default handler
-            handlersList.addHandler(new DefaultHandler());
+            handlerList.addHandler(new DefaultHandler());
 
             // add handlers list - invoking handlers up to the first that calls Request.setHandled(true)
-            server.setHandler(handlersList);
+            server.setHandler(handlerList);
 
             //make callback before starting
             callback.accept(String.format("The host %s will now start a server on port %d", host, port));

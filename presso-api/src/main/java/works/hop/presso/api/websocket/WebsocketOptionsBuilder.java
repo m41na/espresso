@@ -8,6 +8,8 @@ public class WebsocketOptionsBuilder {
     private String websocketPath = "/";
     private int bufferSize = 128 * 1024;
 
+    private int pulseInterval = 20000;
+
     private WebsocketOptionsBuilder() {
         //hide constructor
     }
@@ -31,6 +33,11 @@ public class WebsocketOptionsBuilder {
         return this;
     }
 
+    public WebsocketOptionsBuilder pulseInterval(int interval) {
+        this.pulseInterval = interval;
+        return this;
+    }
+
     public IWebsocketOptions build() {
         return new IWebsocketOptions() {
             @Override
@@ -46,6 +53,11 @@ public class WebsocketOptionsBuilder {
             @Override
             public int maxBufferSize() {
                 return WebsocketOptionsBuilder.this.bufferSize;
+            }
+
+            @Override
+            public int pingInterval() {
+                return WebsocketOptionsBuilder.this.pulseInterval;
             }
         };
     }

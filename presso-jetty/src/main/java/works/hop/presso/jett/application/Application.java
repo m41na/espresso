@@ -29,6 +29,7 @@ import works.hop.presso.jett.view.ViewEngineFactory;
 import works.hop.presso.jett.websocket.WebSocketListenerCreator;
 
 import java.util.*;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -53,7 +54,7 @@ public class Application extends Router implements IApplication, Cloneable {
         return null;
     }
 
-    public HandlerList getHandlersList() {
+    public HandlerList getHandlerList() {
         // ideally, only the entry point application should return a valid value
         return null;
     }
@@ -64,6 +65,11 @@ public class Application extends Router implements IApplication, Cloneable {
     }
 
     public ConfigMap getAppConfig() {
+        // ideally, only the entry point application should return a valid value
+        return null;
+    }
+
+    public ScheduledExecutorService getExecutorService() {
         // ideally, only the entry point application should return a valid value
         return null;
     }
@@ -198,7 +204,7 @@ public class Application extends Router implements IApplication, Cloneable {
 
     @Override
     public void use(CorsOptions options) {
-        getHandlersList().addHandler(new CorsHandler(options));
+        getHandlerList().addHandler(new CorsHandler(options));
     }
 
     @Override
@@ -219,7 +225,7 @@ public class Application extends Router implements IApplication, Cloneable {
     @Override
     public void use(IStaticOptions options) {
         ResourceHandler resourceHandler = Espresso.staticFiles(options);
-        getHandlersList().addHandler(resourceHandler);
+        getHandlerList().addHandler(resourceHandler);
     }
 
     @Override
@@ -251,7 +257,7 @@ public class Application extends Router implements IApplication, Cloneable {
                 upgradeResponse.setAcceptedSubProtocol(options.subProtocols().get(0));
 
                 //provider a builder for websocket endpoints
-                WebSocketListenerCreator handlerCreator = new WebSocketListenerCreator();
+                WebSocketListenerCreator handlerCreator = new WebSocketListenerCreator(getExecutorService(), options.pingInterval());
                 creator.accept(handlerCreator);
 
                 //return a websocket endpoint

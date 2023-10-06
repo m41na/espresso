@@ -1,15 +1,29 @@
 package works.hop.presso.jett.websocket;
 
 import org.eclipse.jetty.websocket.api.Session;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import works.hop.presso.api.websocket.IWebsocketHandler;
 
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 class WebSocketListenerCreatorTest {
 
-    WebSocketListenerCreator creator = new WebSocketListenerCreator();
+    WebSocketListenerCreator creator;
+
+    @BeforeEach
+    void setUp(){
+        ScheduledExecutorService scheduler = mock(ScheduledExecutorService.class);
+        ScheduledFuture<?> future = mock(ScheduledFuture.class);
+        doReturn(future).when(scheduler).schedule(any(Runnable.class), anyLong(), any(TimeUnit.class));
+        creator = new WebSocketListenerCreator(scheduler, 20000);
+    }
 
     @Test
     void build() {
@@ -41,7 +55,7 @@ class WebSocketListenerCreatorTest {
         IWebsocketHandler<Session> handler = creator.build();
         handler.onConnect(mockSession);
         handler.onError(mockError);
-        handler.onMessage(mockMessage);
+        handler.onMessage(mockSession, mockMessage);
         handler.onBinary(mockMessage.getBytes(), 0, 10);
         handler.onClose(1001, closeReason);
     }
