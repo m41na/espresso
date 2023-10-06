@@ -58,7 +58,7 @@ public class Ex13AppWebsocketEndpoint extends WebSocketAdapter implements IWebso
     }
 
     @Override
-    public void onMessage(String message) {
+    public void onMessage(Session session, String message) {
         //do nothing
     }
 

@@ -35,6 +35,10 @@ public class Ex13AppWebsocketServer {
                 }
             });
 
+            ws.onBinary((bytes, offset, length) -> {
+                System.out.println("Received BYTES message: " + new String(bytes, offset, length));
+            });
+
             ws.onError(cause -> cause.printStackTrace(System.err));
         });
 

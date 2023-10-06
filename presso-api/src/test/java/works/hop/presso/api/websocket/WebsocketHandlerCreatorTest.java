@@ -27,7 +27,7 @@ class WebsocketHandlerCreatorTest {
         }
 
         @Override
-        public <R> R getRemote() {
+        public Object getRemote() {
             return null;
         }
 
@@ -41,7 +41,7 @@ class WebsocketHandlerCreatorTest {
     void onConnect() {
         OnConnect<BigDecimal> handler = mock(OnConnect.class);
         creator.onConnect(handler);
-        creator.onConnect.accept(new BigDecimal(10));
+        creator.onConnectHandler.accept(new BigDecimal(10));
         ArgumentCaptor<BigDecimal> number = ArgumentCaptor.forClass(BigDecimal.class);
         verify(handler, times(1)).accept(number.capture());
         assertThat(number.getValue().intValue()).isEqualTo(10);
@@ -51,7 +51,7 @@ class WebsocketHandlerCreatorTest {
     void onError() {
         OnError handler = mock(OnError.class);
         creator.onError(handler);
-        creator.onError.accept(new Exception("Hit it"));
+        creator.onErrorHandler.accept(new Exception("Hit it"));
         ArgumentCaptor<Throwable> cause = ArgumentCaptor.forClass(Throwable.class);
         verify(handler, times(1)).accept(cause.capture());
         assertThat(cause.getValue().getMessage()).isEqualTo("Hit it");
@@ -61,7 +61,7 @@ class WebsocketHandlerCreatorTest {
     void onMessage() {
         OnMessage<BigDecimal> handler = mock(OnMessage.class);
         creator.onMessage(handler);
-        creator.onMessage.accept(new BigDecimal("100"), "Roll with it");
+        creator.onMessageHandler.accept(new BigDecimal("100"), "Roll with it");
         ArgumentCaptor<BigDecimal> number = ArgumentCaptor.forClass(BigDecimal.class);
         ArgumentCaptor<String> message = ArgumentCaptor.forClass(String.class);
         verify(handler, times(1)).accept(number.capture(), message.capture());
@@ -73,7 +73,7 @@ class WebsocketHandlerCreatorTest {
     void onBinary() {
         OnBinary handler = mock(OnBinary.class);
         creator.onBinary(handler);
-        creator.onBinary.accept("Roll with it".getBytes(), 0, 12);
+        creator.onBinaryHandler.accept("Roll with it".getBytes(), 0, 12);
         ArgumentCaptor<byte[]> payload = ArgumentCaptor.forClass(byte[].class);
         ArgumentCaptor<Integer> offset = ArgumentCaptor.forClass(Integer.class);
         ArgumentCaptor<Integer> length = ArgumentCaptor.forClass(Integer.class);
@@ -87,7 +87,7 @@ class WebsocketHandlerCreatorTest {
     void onClose() {
         OnClose handler = mock(OnClose.class);
         creator.onClose(handler);
-        creator.onClose.accept(1001, "Looking good");
+        creator.onCloseHandler.accept(1001, "Looking good");
         ArgumentCaptor<Integer> statusCode = ArgumentCaptor.forClass(Integer.class);
         ArgumentCaptor<String> reason = ArgumentCaptor.forClass(String.class);
         verify(handler, times(1)).accept(statusCode.capture(), reason.capture());

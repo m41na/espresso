@@ -9,4 +9,6 @@ public interface IWebsocketOptions {
     String websocketPath();
 
     int maxBufferSize();
+
+    int pingInterval();
 }
