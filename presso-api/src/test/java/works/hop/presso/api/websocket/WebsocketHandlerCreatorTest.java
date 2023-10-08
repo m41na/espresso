@@ -59,13 +59,11 @@ class WebsocketHandlerCreatorTest {
 
     @Test
     void onMessage() {
-        OnMessage<BigDecimal> handler = mock(OnMessage.class);
+        OnMessage handler = mock(OnMessage.class);
         creator.onMessage(handler);
-        creator.onMessageHandler.accept(new BigDecimal("100"), "Roll with it");
-        ArgumentCaptor<BigDecimal> number = ArgumentCaptor.forClass(BigDecimal.class);
+        creator.onMessageHandler.accept("Roll with it");
         ArgumentCaptor<String> message = ArgumentCaptor.forClass(String.class);
-        verify(handler, times(1)).accept(number.capture(), message.capture());
-        assertThat(number.getValue().intValue()).isEqualTo(100);
+        verify(handler, times(1)).accept(message.capture());
         assertThat(message.getValue()).isEqualTo("Roll with it");
     }
 

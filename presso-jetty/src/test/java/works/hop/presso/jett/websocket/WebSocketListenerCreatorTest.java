@@ -10,18 +10,20 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 
 class WebSocketListenerCreatorTest {
 
     WebSocketListenerCreator creator;
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
         ScheduledExecutorService scheduler = mock(ScheduledExecutorService.class);
         ScheduledFuture<?> future = mock(ScheduledFuture.class);
-        doReturn(future).when(scheduler).schedule(any(Runnable.class), anyLong(), any(TimeUnit.class));
+        doReturn(future).when(scheduler).scheduleAtFixedRate(any(Runnable.class), anyLong(), anyLong(), any(TimeUnit.class));
         creator = new WebSocketListenerCreator(scheduler, 20000);
     }
 
@@ -40,7 +42,7 @@ class WebSocketListenerCreatorTest {
             assertThat(throwable).isSameAs(mockError);
         });
 
-        creator.onMessage((session, message) -> {
+        creator.onMessage(message -> {
             assertThat(message).isSameAs(mockMessage);
         });
 
@@ -55,7 +57,7 @@ class WebSocketListenerCreatorTest {
         IWebsocketHandler<Session> handler = creator.build();
         handler.onConnect(mockSession);
         handler.onError(mockError);
-        handler.onMessage(mockSession, mockMessage);
+        handler.onMessage(mockMessage);
         handler.onBinary(mockMessage.getBytes(), 0, 10);
         handler.onClose(1001, closeReason);
     }

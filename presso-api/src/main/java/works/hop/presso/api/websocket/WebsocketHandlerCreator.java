@@ -4,7 +4,7 @@ public abstract class WebsocketHandlerCreator<S> {
 
     protected OnConnect<S> onConnectHandler;
     protected OnError onErrorHandler;
-    protected OnMessage<S> onMessageHandler;
+    protected OnMessage onMessageHandler;
     protected OnBinary onBinaryHandler;
     protected OnClose onCloseHandler;
 
@@ -16,7 +16,7 @@ public abstract class WebsocketHandlerCreator<S> {
         this.onErrorHandler = handler;
     }
 
-    public void onMessage(OnMessage<S> handler) {
+    public void onMessage(OnMessage handler) {
         this.onMessageHandler = handler;
     }
 

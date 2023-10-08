@@ -8,7 +8,7 @@ public interface IWebsocketHandler<S> {
 
     void onClose(int statusCode, String reason);
 
-    void onMessage(S session, String message);
+    void onMessage(String message);
 
     void onBinary(byte[] payload, int offset, int length);
 }

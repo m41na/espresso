@@ -28,10 +28,10 @@ public class Ex13AppWebsocketServer {
 
             ws.onClose((status, reason) -> System.out.printf("Socket closing: %d, %s\n", status, reason));
 
-            ws.onMessage((session, message) -> {
+            ws.onMessage(message -> {
                 System.out.println("Received TXT message: " + message);
                 if (message.toLowerCase(Locale.ENGLISH).contains("bye")) {
-                    ((Session) session).close();
+                    ((Session) ws.getSession()).close();
                 }
             });
 

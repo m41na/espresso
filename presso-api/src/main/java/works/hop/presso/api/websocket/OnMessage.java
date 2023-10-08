@@ -1,7 +1,7 @@
 package works.hop.presso.api.websocket;
 
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
-public interface OnMessage<S> extends BiConsumer<S, String> {
+public interface OnMessage extends Consumer<String> {
 
 }
