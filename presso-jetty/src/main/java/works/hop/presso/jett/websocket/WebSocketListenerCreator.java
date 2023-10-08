@@ -31,7 +31,7 @@ public class WebSocketListenerCreator extends WebsocketHandlerCreator<Session> {
 
         @Override
         public void onWebSocketText(String message) {
-            WebSocketListenerCreator.this.onMessageHandler.accept(getSession(), message);
+            WebSocketListenerCreator.this.onMessageHandler.accept(message);
             this.heartBeat.cancel(true);
             this.heartBeat = schedulePingEvent();
         }
@@ -55,11 +55,11 @@ public class WebSocketListenerCreator extends WebsocketHandlerCreator<Session> {
             WebSocketListenerCreator.this.onErrorHandler.accept(cause);
         }
 
-        private ScheduledFuture<?> schedulePingEvent(){
+        private ScheduledFuture<?> schedulePingEvent() {
             return WebSocketListenerCreator.this.scheduler.scheduleAtFixedRate(() -> {
-                try{
+                try {
                     getRemote().sendPing(ByteBuffer.wrap("ping".getBytes()));
-                } catch (IOException e){
+                } catch (IOException e) {
                     onWebSocketClose(3000, "Could not reach client");
                 }
             }, pingInterval, pingInterval, TimeUnit.MILLISECONDS);

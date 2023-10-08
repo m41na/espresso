@@ -641,9 +641,9 @@ public static void main(String[] args) {
 }
 ```
 
-##### void websocket(String contextPath, Object creator, IWebsocketOptions options)
+##### void websocket(String contextPath, IWebsocketOptions options, Consumer<WebsocketHandlerCreator<?>> creator)
 
-Registers a web socket handler which will connect and communicate with web socket clients
+Register a web socket handler which will connect and communicate with web socket clients
 
 ```bash
 public static void main(String[] args) {
@@ -663,7 +663,7 @@ public static void main(String[] args) {
 
         ws.onClose((status, reason) -> System.out.printf("Socket closing: %d, %s\n", status, reason));
 
-        ws.onMessage((session, message) -> {
+        ws.onMessage(message -> {
             System.out.println("Received TXT message: " + message);
             if (message.toLowerCase(Locale.ENGLISH).contains("bye")) {
                 ((Session) session).close();

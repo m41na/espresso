@@ -37,6 +37,6 @@ function sendMessage() {
     document.getElementById("message").value = "";
 }
 
-function closeConnection(){
+function closeConnection() {
     ws.close(3000, 'client has disconnected')
 }
