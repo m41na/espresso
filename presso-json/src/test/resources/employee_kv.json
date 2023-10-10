@@ -1,0 +1,26 @@
+{
+  "contactInfo": {
+    "HOME": {
+      "type": "HOME",
+      "number": "212 555-1234"
+    },
+    "CELL": {
+      "type": "CELL",
+      "number": "212 555-1235"
+    },
+    "FAX": {
+      "type": "FAX",
+      "number": "646 555-4567"
+    }
+  },
+  "firstName": "John",
+  "lastName": "Smith",
+  "age": 25,
+  "emailAddress": "john.smith@average.com",
+  "address": {
+    "streetAddress": "21 2nd Street",
+    "city": "New York",
+    "state": "NY",
+    "postalCode": 10021
+  }
+}

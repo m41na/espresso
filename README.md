@@ -643,14 +643,49 @@ public static void main(String[] args) {
 
 ##### void websocket(String contextPath, IWebsocketOptions options, Consumer<WebsocketHandlerCreator<?>> creator)
 
-Register a web socket handler which will connect and communicate with web socket clients
+Register a web socket handler which will connect and communicate with web socket clients. You __MUST__ provide an
+implementation for the method you want to be handled. The available handler methods are in the __IIWebsocketHandler__ 
+interface
+
+```bash
+interface IWebsocketHandler<S> {
+
+    void onConnect(S session); //S is a generic type, which represents a Session in the servlet-based implemnetation
+    
+    void onError(Throwable cause);
+    
+    void onClose(int statusCode, String reason);
+    
+    void onMessage(String message);
+    
+    void onBinary(byte[] payload, int offset, int length);
+}
+```
+
+There are also some other convenience methods which are available in the creator that can be used while registering the 
+handler methods. These methods are:
+
+```bash
+RemoteEndpoint getRemote();
+
+Session getSession();
+
+boolean isConnected();
+
+boolean isNotConnected();
+```
+
+An illustration for registering method handlers is shown below. Point worth noting:
+1. When registering a *subProtocol*, make sure it is matched in the client. __protocolOne__ is the default value
+2. When registering a *pulseInterval*, make sure it is less than the http connection timeout. __20000__ millis is the 
+default value, while __30000__ millis is the default http connection timeout.
 
 ```bash
 public static void main(String[] args) {
     var app = express();
-    app.use(StaticOptionsBuilder.newBuilder().baseDirectory("presso-jetty/view").welcomeFiles("websocket.html").build());
-    app.websocket("/ws/", WebsocketOptionsBuilder.newBuilder().websocketPath("/events/*").build(), (ws) -> {
-
+    app.use(StaticOptionsBuilder.newBuilder().baseDirectory("presso-jetty/view")..welcomeFiles("websocket.html").build());
+    app.websocket("/ws/", WebsocketOptionsBuilder.newBuilder().subProtocols(List.of("protocolOne"))
+                .pulseInterval(20000).websocketPath("/events/*").build(), (ws) -> {
         ws.onConnect(session -> {
             Session sess = (Session) session;
             System.out.println("Socket connected: " + session);
@@ -666,14 +701,78 @@ public static void main(String[] args) {
         ws.onMessage(message -> {
             System.out.println("Received TXT message: " + message);
             if (message.toLowerCase(Locale.ENGLISH).contains("bye")) {
-                ((Session) session).close();
+                ((Session) ws.getSession()).close();
             }
+        });
+
+        ws.onBinary((bytes, offset, length) -> {
+            System.out.println("Received BYTES message: " + new String(bytes, offset, length));
         });
 
         ws.onError(cause -> cause.printStackTrace(System.err));
     });
 
     app.listen(8090);
+}
+```
+
+On the client side (e.g. browser), a sample implementation is also illustrated:
+
+```html:title='websocket.html'
+<form>
+    <label for="message">Message</label>
+    <textarea id="message"></textarea>
+    <input onclick="sendMessage()" type="button" value="Send">
+    <input onclick="closeConnection()" type="button" value="Close">
+</form>
+
+<script src="js/ws-events.js" type="text/javascript"></script>
+```
+
+And the corresponding javascript would look like this:
+
+```js:title='js/ws-events.js'
+const ws = new WebSocket(
+    "ws://localhost:8090/ws/events/", ["protocolOne"]
+);
+
+ws.addEventListener('open', (connection) => {
+    console.log('connection opened', connection)
+    ws.send("Ok, let kick off this thing!");
+    const blob = new Blob(['the client is now connected'], {type: 'text/plain'});
+    ws.send(blob);
+});
+
+ws.addEventListener('error', (cause) => {
+    console.log('connection encountered an error', cause);
+});
+
+ws.addEventListener('message', (message) => {
+    console.log('received message from server', message.data);
+});
+
+ws.addEventListener('close', (status, reason) => {
+    console.log('server closed connection', status, reason);
+});
+
+function sendMessage() {
+    // Construct a msg object containing the data the server needs to process the message from the chat client.
+    const msg = {
+        type: "message",
+        text: document.getElementById("message").value,
+        id: 'testing',
+        date: Date.now(),
+    };
+
+    // Send the msg object as a JSON-formatted string.
+    ws.send(JSON.stringify(msg));
+
+    // Blank the text input element, ready to receive the next line of text from the user.
+    document.getElementById("message").value = "";
+}
+
+function closeConnection() {
+    ws.close(3000, 'client has disconnected')
 }
 ```
 
