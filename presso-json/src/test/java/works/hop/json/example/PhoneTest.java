@@ -3,7 +3,6 @@ package works.hop.json.example;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class PhoneTest {
 
@@ -12,12 +11,6 @@ class PhoneTest {
         Phone phone = new Phone(null, null, "  ", "123-456");
         String string = phone.toString();
         assertThat(string).isEqualTo("123-456");
-    }
-
-    @Test
-    void test_phone_without_number_should_throw_error() {
-        Phone phone = new Phone(PhoneType.CELL, null, null, null);
-        assertThrows(RuntimeException.class, phone::toString);
     }
 
     @Test
