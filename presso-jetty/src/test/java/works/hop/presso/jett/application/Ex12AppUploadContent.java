@@ -1,6 +1,6 @@
 package works.hop.presso.jett.application;
 
-import works.hop.presso.api.servable.StaticOptionsBuilder;
+import works.hop.presso.api.servable.IStaticOptionsBuilder;
 import works.hop.presso.jett.config.ConfigMap;
 import works.hop.presso.jett.config.MultipartConfig;
 
@@ -12,7 +12,12 @@ public class Ex12AppUploadContent {
     public static void main(String[] args) {
         var app = express();
         app.properties("app-default.yaml");
-        app.use("/upload", StaticOptionsBuilder.newBuilder().baseDirectory("presso-jetty/view").welcomeFiles("upload.html").build());
+        app.use("/upload", IStaticOptionsBuilder.newBuilder()
+                .baseDirectory("presso-jetty/view")
+                .welcomeFiles("upload.html")
+                .listDirectories(false)
+                .acceptRanges(true)
+                .build());
         app.use(multipart(
                 System.getProperty("java.io.tmpdir"),
                 ((Application) app).getAppConfig().get(ConfigMap.MULTIPART_CONFIG, MultipartConfig.class).getMaxFileSize(),

@@ -1,7 +1,7 @@
 package works.hop.presso.jett.application;
 
 import org.eclipse.jetty.websocket.api.Session;
-import works.hop.presso.api.servable.StaticOptionsBuilder;
+import works.hop.presso.api.servable.IStaticOptionsBuilder;
 import works.hop.presso.api.websocket.WebsocketOptionsBuilder;
 
 import java.io.IOException;
@@ -14,7 +14,7 @@ public class Ex13AppWebsocketServer {
 
     public static void main(String[] args) {
         var app = express();
-        app.use(StaticOptionsBuilder.newBuilder().baseDirectory("presso-jetty/view").welcomeFiles("websocket.html").build());
+        app.use(IStaticOptionsBuilder.newBuilder().baseDirectory("presso-jetty/view").welcomeFiles("websocket.html").build());
         app.websocket("/ws/", WebsocketOptionsBuilder.newBuilder().subProtocols(List.of("protocolOne"))
                 .pulseInterval(20000).websocketPath("/events/*").build(), (ws) -> {
 

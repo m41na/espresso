@@ -1,7 +1,7 @@
 package works.hop.presso.jett.application;
 
 import works.hop.presso.api.application.AppSettings;
-import works.hop.presso.api.servable.StaticOptionsBuilder;
+import works.hop.presso.api.servable.IStaticOptionsBuilder;
 
 import java.util.Map;
 
@@ -15,8 +15,8 @@ public class Ex8AppStaticContent {
         app.set(AppSettings.Setting.VIEW_ENGINE.property, "mvel");
         app.set(AppSettings.Setting.TEMPLATES_EXT.property, ".mvel");
 //        app.engine(new MvelViewEngine("presso-jetty/view"), ".mvel");
-        app.use(StaticOptionsBuilder.newBuilder().baseDirectory("presso-jetty/view").build());
-        app.use("/home", StaticOptionsBuilder.newBuilder().baseDirectory("presso-jetty/view").build());
+        app.use(IStaticOptionsBuilder.newBuilder().baseDirectory("presso-jetty/view").build());
+        app.use("/home", IStaticOptionsBuilder.newBuilder().baseDirectory("presso-jetty/view").build());
 
         app.use((req, res, next) -> {
             res.locals().put("name", "Jimmy");

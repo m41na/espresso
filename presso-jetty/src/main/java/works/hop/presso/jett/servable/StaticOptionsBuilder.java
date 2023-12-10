@@ -3,16 +3,14 @@ package works.hop.presso.jett.servable;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.util.resource.Resource;
 import works.hop.presso.api.servable.IStaticOptions;
+import works.hop.presso.api.servable.IStaticOptionsBuilder;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.function.Function;
 
 public class StaticOptionsBuilder {
 
-    private String[] welcomeFiles = new String[]{"index.html"};
-    private String baseDirectory = "www";
-    private boolean acceptRanges = false;
-    private boolean listDirectories = false;
+    IStaticOptions staticOptions;
 
     private StaticOptionsBuilder() {
         //hide constructor
@@ -22,48 +20,26 @@ public class StaticOptionsBuilder {
         return new StaticOptionsBuilder();
     }
 
-    public static StaticOptionsBuilder newBuilder(IStaticOptions options) {
-        StaticOptionsBuilder bld = newBuilder();
-        if (options != null) {
-            bld.baseDirectory = options.baseDirectory();
-            bld.welcomeFiles = options.welcomeFiles();
-            bld.acceptRanges = options.acceptRanges();
-            bld.listDirectories = options.listDirectories();
-        }
-        return bld;
-    }
-
-    public StaticOptionsBuilder welcomeFile(String... welcomeFile) {
-        this.welcomeFiles = Arrays.stream(welcomeFile).toArray(String[]::new);
+    public StaticOptionsBuilder options(IStaticOptions options) {
+        this.staticOptions = options;
         return this;
     }
 
-    public StaticOptionsBuilder acceptRanges(Boolean accept) {
-        this.acceptRanges = accept;
-        return this;
-    }
-
-    public StaticOptionsBuilder listDirectories(boolean list) {
-        this.listDirectories = list;
-        return this;
-    }
-
-    public StaticOptionsBuilder baseDirectory(String directory) {
-        this.baseDirectory = directory;
-        return this;
+    public StaticOptionsBuilder options(Function<IStaticOptionsBuilder, IStaticOptions> builder) {
+        return this.options(builder.apply(IStaticOptionsBuilder.newBuilder()));
     }
 
     public ResourceHandler build() {
         try {
             ResourceHandler handler = new ResourceHandler();
             // Configure resources base directory
-            handler.setBaseResource(Resource.newResource(this.baseDirectory));
+            handler.setBaseResource(Resource.newResource(this.staticOptions.baseDirectory()));
             // Configure directory listing.
-            handler.setDirectoriesListed(this.listDirectories);
+            handler.setDirectoriesListed(this.staticOptions.listDirectories());
             // Configure welcome files.
-            handler.setWelcomeFiles(this.welcomeFiles);
+            handler.setWelcomeFiles(this.staticOptions.welcomeFiles());
             // Configure whether to accept range requests.
-            handler.setAcceptRanges(this.acceptRanges);
+            handler.setAcceptRanges(this.staticOptions.acceptRanges());
             return handler;
         } catch (IOException e) {
             throw new RuntimeException(e);

@@ -31,7 +31,7 @@ import static works.hop.presso.api.content.IContentType.*;
 
 public class Espresso {
 
-    public static final String SERVER_NAME = "rizzy-express";
+    public static final String SERVER_NAME = "kahawa-press";
     public static final String DEFAULT_CTX = "/";
     public static final String PATH_SEGMENT = "(\\b.+?)(/)|(\\b.+$)";
     private static final ConfigMap configMap = new ConfigMap();
@@ -121,12 +121,12 @@ public class Espresso {
     }
 
     public static ResourceHandler staticFiles(IStaticOptions options) {
-        return StaticOptionsBuilder.newBuilder(options).build();
+        return StaticOptionsBuilder.newBuilder().options(options).build();
     }
 
     public static ContextHandler staticFiles(String context, IStaticOptions options) {
         ContextHandler contextHandler = new ContextHandler(context);
-        ResourceHandler handler = StaticOptionsBuilder.newBuilder(options).build();
+        ResourceHandler handler = StaticOptionsBuilder.newBuilder().options(options).build();
         contextHandler.setHandler(handler);
         return contextHandler;
     }
