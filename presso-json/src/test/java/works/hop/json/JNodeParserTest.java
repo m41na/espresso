@@ -1,7 +1,9 @@
 package works.hop.json;
 
 import org.junit.jupiter.api.Test;
-import works.hop.json.example.*;
+import works.hop.presso.json.JNodeParser;
+import works.hop.presso.json.NodeValue;
+import works.hop.presso.json.example.*;
 
 import java.util.ArrayList;
 import java.util.Map;

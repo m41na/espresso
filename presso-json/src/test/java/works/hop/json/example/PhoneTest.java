@@ -1,6 +1,8 @@
 package works.hop.json.example;
 
 import org.junit.jupiter.api.Test;
+import works.hop.presso.json.example.Phone;
+import works.hop.presso.json.example.PhoneType;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
