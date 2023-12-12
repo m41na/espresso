@@ -1,0 +1,105 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "user 1",
+      "email": "user1@email.com",
+      "dateCreated": null
+    },
+    {
+      "id": 2,
+      "name": "user 2",
+      "email": "user2@emal.com",
+      "dateCreated": null
+    },
+    {
+      "id": 3,
+      "name": "user 3",
+      "email": "user3@emal.com",
+      "dateCreated": null
+    },
+    {
+      "id": 4,
+      "name": "user 4",
+      "email": "user4@emal.com",
+      "dateCreated": null
+    }
+  ],
+  "accounts": [
+    {
+      "id": 1,
+      "username": "account1",
+      "password": "sleepy1",
+      "userid": {
+        "ref": "//users[id=1]"
+      },
+      "dateCreated": null
+    },
+    {
+      "id": 2,
+      "username": "account2",
+      "password": "sleepy2",
+      "userid": {
+        "ref": "//users[id=2]"
+      },
+      "dateCreated": null
+    },
+    {
+      "id": 3,
+      "username": "account3",
+      "password": "sleepy3",
+      "userid": {
+        "ref": "//users[id=3]"
+      },
+      "dateCreated": null
+    }
+  ],
+  "choices": [
+    {
+      "type": "fibonacci",
+      "values": [
+        1,
+        2,
+        3,
+        5,
+        8,
+        13
+      ]
+    },
+    {
+      "type": "letters",
+      "values": [
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f"
+      ]
+    }
+  ],
+  "games": [
+    {
+      "game": 1,
+      "organizer": {
+        "ref": "//users[id=1]"
+      },
+      "players": [
+        {
+          "ref": "//users[id=2]",
+          "choice": null,
+          "status": 1
+        },
+        {
+          "ref": "//users[id=3]",
+          "choice": null,
+          "status": 1
+        }
+      ],
+      "question": "The current question in play",
+      "choices": {
+        "ref": "//choices[type=fibonacci]"
+      }
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+[
+  {
+    "ref": "//users[id=1]",
+    "players": {
+      "description": "players joined or exited",
+      "ref": "//games[game=1].players"
+    },
+    "choices": {
+      "description": "player made their choice selection",
+      "ref": "//games[game=1].players[choice]"
+    }
+  },
+  {
+    "ref": "//games[game=1].players[ref=*]",
+    "question": {
+      "description": "question has been changed",
+      "ref": "/games[game=1].question"
+    }
+  }
+]

@@ -18,17 +18,26 @@ public class Ex0JettyResourceHandler {
 
         // Create handlers list
         HandlerList handlerList = new HandlerList();
-        handlerList.addHandler(resourceHandler());
+
+        //1. adding resource handler before api handler (both on the same context path) will favor the resource handler
+        // handlerList.addHandler(resourceHandler());
 
         // Create a ContextHandlerCollection to hold contexts.
         ContextHandlerCollection contextCollection = new ContextHandlerCollection();
         handlerList.addHandler(contextCollection);
 
         // Create the context for the shop web application.
-        ContextHandler apiContext = new ContextHandler("/api");
+        ContextHandler apiContext = new ContextHandler("/");
+
+        //2. optionally, use contest path to logically separate ths resource handler from the api handler
+        // ContextHandler apiContext = new ContextHandler("/api");
+
         apiContext.setHandler(new RestfulHandler());
         // Add it to ContextHandlerCollection.
         contextCollection.addHandler(apiContext);
+
+        //3. adding resource handler after api handler (both on the same context path) will favor the api handler
+        handlerList.addHandler(resourceHandler());
 
         // Link the HandlerList to the Server.
         server.setHandler(handlerList);
@@ -67,8 +76,11 @@ public class Ex0JettyResourceHandler {
         SslConnectionFactory tls = new SslConnectionFactory(sslContextFactory, alpn.getProtocol());
 
         // The ServerConnector instance.
-        ServerConnector connector = new ServerConnector(server, tls, alpn, h2, http11);
-        connector.setPort(8443);
+//        ServerConnector connector = new ServerConnector(server, tls, alpn, h2, http11);
+//        connector.setPort(8443);
+
+        ServerConnector connector = new ServerConnector(server);
+        connector.setPort(3000);
 
         server.addConnector(connector);
         return server;

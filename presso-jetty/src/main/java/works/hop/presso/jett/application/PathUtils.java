@@ -13,28 +13,18 @@ public class PathUtils {
     }
 
     public static String pathToRegex(String path) {
-        Pattern pattern = Pattern.compile("(:?\\b.+?)(/)|(:?\\b.+$)");
+        Pattern pattern = Pattern.compile("(:.+?\\b)");
         Matcher matcher = pattern.matcher(path);
         StringBuilder regex = new StringBuilder("/");
+        int start = 1;
         while (matcher.find()) {
-            String found = matcher.group();
-            if (found.startsWith(":")) {
-                if (matcher.group(1) != null) {
-                    String matched = matcher.group(1);
-                    extractMatched(regex, matched);
-                    regex.append(matcher.group(2));
-                } else {
-                    String matched = matcher.group(3);
-                    extractMatched(regex, matched);
-                }
-            } else if (found.endsWith("/")) {
-                String matched = matcher.group(1);
-                extractMatched(regex, matched);
-                regex.append(matcher.group(2));
-            } else {
-                String matched = matcher.group(3);
-                extractMatched(regex, matched);
-            }
+            regex.append(path, start, matcher.start());
+            String matched = matcher.group(1);
+            extractMatched(regex, matched);
+            start = matcher.end();
+        }
+        if (start < path.length()) {
+            regex.append(path, start, path.length());
         }
         return regex.toString();
     }
@@ -75,20 +65,24 @@ public class PathUtils {
     }
 
     public static Map<String, String> extractPathVariables(String path, String pathInfo) {
-        Map<String, String> map = new LinkedHashMap<>();
-        String[] pathParts = path.split("/");
-        String[] pathInfoParts = pathInfo.split("/");
-        if (pathParts.length != pathInfoParts.length) {
-            throw new RuntimeException("Mapped path does not match the length of supplied pathInfo");
-        }
-        for (int i = 0; i < pathParts.length; i++) {
-            String pathPart = pathParts[i];
-            String pathInfoPart = pathInfoParts[i];
-            if (pathPart.startsWith(":")) {
-                map.put(pathPart.substring(1), pathInfoPart);
+        String pathRegex = ":(.+?\\b)";
+        Matcher pathMatcher = Pattern.compile(pathRegex).matcher(path);
+
+        String pathInfoRegex = PathUtils.pathToRegex(path);
+        Matcher pathInfoMatcher = Pattern.compile(pathInfoRegex).matcher(pathInfo);
+
+        Map<String, String> matches = new LinkedHashMap<>();
+        if (pathInfoMatcher.find()) {
+            int i = 0;
+            while (i++ < pathInfoMatcher.groupCount()) {
+                if (pathInfoMatcher.groupCount() > 1 && pathMatcher.find()) {
+                    String group = pathInfoMatcher.group(i);
+                    String key = pathMatcher.group(1);
+                    matches.put(key, group);
+                }
             }
         }
-        return map;
+        return matches;
     }
 
     public static Map<String, List<String>> extractQueryVariables(MultiMap<String> queryParams) {

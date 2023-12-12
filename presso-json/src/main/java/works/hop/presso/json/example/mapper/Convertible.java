@@ -15,7 +15,7 @@ public interface Convertible {
         convert(target, new Properties());
     }
 
-    default <T> void resolve(String propertyName, Object propertyValue, T target, Class<?> targetPropertyType, Properties properties){
+    default <T> void resolve(String propertyName, Object propertyValue, T target, Class<?> targetPropertyType, Properties properties) {
         try {
             try {
                 MethodHandle setter = setter(propertyName, targetPropertyType, target.getClass());
@@ -34,7 +34,7 @@ public interface Convertible {
         }
     }
 
-    default <T> void resolve(String propertyName, T target, Class<?> targetPropertyType, Properties properties){
+    default <T> void resolve(String propertyName, T target, Class<?> targetPropertyType, Properties properties) {
         try {
             Class<?> srcPropertyType = getPropertyType(propertyName, properties);
             MethodHandle getter = getter(propertyName, srcPropertyType, getClass());
@@ -53,8 +53,7 @@ public interface Convertible {
             try {
                 Field field = getClass().getField(propertyName);          // public access
                 return field.getType();
-            }
-            catch (NoSuchFieldException | SecurityException e2) {
+            } catch (NoSuchFieldException | SecurityException e2) {
                 return getPropertyType(properties.getProperty(propertyName), properties);
             }
         }
@@ -74,8 +73,8 @@ public interface Convertible {
         return lookup.findVirtual(targetClass, getterName, getterType);
     }
 
-    default void from(Map<String, Object> src, Properties properties){
-        for(Map.Entry<String, Object> entry : src.entrySet()){
+    default void from(Map<String, Object> src, Properties properties) {
+        for (Map.Entry<String, Object> entry : src.entrySet()) {
             Object srcPropertyValue = entry.getValue();
             resolve(entry.getKey(), src.get(entry.getKey()), this, srcPropertyValue.getClass(), properties);
         }

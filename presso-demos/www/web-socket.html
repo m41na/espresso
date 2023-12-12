@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Web Socket Home</title>
+    <link rel="stylesheet" href="css/ws.css" />
+    <script defer src="js/ws.js"></script>
+</head>
+<body>
+<form id="chat-form">
+    <label for="message" autofocus tabindex="1"> Type your message here
+        <textarea rows="5" cols="100" id="message"></textarea>
+    </label>
+    <input type="button" value="Send" tabindex="2" onclick="sendText()"/>
+</form>
+<div id="chat-messages"></div>
+</body>
+</html>

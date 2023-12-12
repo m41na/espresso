@@ -32,9 +32,11 @@ public class ByPathRegex implements IRoutable {
         IMatched matchedInfo = new MatchedInfo();
 
         for (Map.Entry<String, IMiddleware[]> entry : middlewares.entrySet()) {
-            if (Pattern.matches(PathUtils.pathToRegex(entry.getKey()), path)) {
+            String pathRegex = PathUtils.pathToRegex(entry.getKey());
+            if (Pattern.matches(pathRegex, path)) {
                 matchedInfo.setParams(PathUtils.extractPathVariables(entry.getKey(), path));
                 matchedInfo.setHandlers(entry.getValue());
+                break;
             }
         }
 

@@ -23,7 +23,12 @@ public class ByMethod implements IRoutable {
 
     @Override
     public IMatched select(ReqMethod method, String path) {
-        return methodRoutes.get(method).select(method, path);
+        if (methodRoutes.containsKey(method)) {
+            return methodRoutes.get(method).select(method, path);
+        } else {
+            //return matched info without any handlers
+            return new MatchedInfo();
+        }
     }
 
     @Override

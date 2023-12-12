@@ -31,7 +31,7 @@ public class JNodeParser {
         return jsonLoader.classpathResource(fileName);
     }
 
-    public String stringify(Class<?> type){
+    public String stringify(Class<?> type) {
         return null;
     }
 

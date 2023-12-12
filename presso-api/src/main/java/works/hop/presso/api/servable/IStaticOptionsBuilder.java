@@ -5,12 +5,12 @@ import java.nio.file.Path;
 
 public class IStaticOptionsBuilder {
 
+    final String projectName = "espresso";
+    final String dirProperty = "user.dir";
     String baseDirectory;
     String[] welcomeFiles = {"index.html"};
     Boolean acceptRanges = true;
     Boolean listDirectories = false;
-    final String projectName = "espresso";
-    final String dirProperty = "user.dir";
 
     private IStaticOptionsBuilder() {
         //hide constructor
@@ -21,11 +21,10 @@ public class IStaticOptionsBuilder {
     }
 
     public IStaticOptionsBuilder baseDirectory(String directory) {
-        if(new File(directory).exists()){
+        if (new File(directory).exists()) {
             this.baseDirectory = directory;
             return this;
-        }
-        else {
+        } else {
             String userDir = System.getProperty(dirProperty);
             String projectPath = userDir.substring(0, userDir.indexOf(projectName));
             Path contentPath = Path.of(projectPath, projectName);

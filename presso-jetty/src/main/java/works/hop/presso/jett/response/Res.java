@@ -129,6 +129,7 @@ public class Res implements IResponse {
     public void end(Object data, String encoding) {
         this.response.setCharacterEncoding(encoding);
         this.writeSync(data);
+        this.end();
     }
 
     @Override
@@ -182,6 +183,19 @@ public class Res implements IResponse {
     @Override
     public void render(String viewName, Map<String, Object> context, BiConsumer<Exception, String> consumer) {
         this.app.render(viewName, context, consumer);
+    }
+
+    @Override
+    public void render(String viewName, Map<String, Object> context) {
+        this.app.render(viewName, context, (err, content) -> {
+            if (err != null) {
+                status(500);
+                send(err.getMessage());
+            } else {
+                status(200);
+                send(content);
+            }
+        });
     }
 
     @Override

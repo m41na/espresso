@@ -111,6 +111,15 @@ public class Espresso {
         return parser;
     }
 
+    public static IBodyParser multipart(String location) {
+        IBodyParser parser = BodyParserFactory.parser(MULTIPART_FORM_DATA);
+        if (parser == null) {
+            parser = new MultipartFormDataParser(location);
+            BodyParserFactory.register(MULTIPART_FORM_DATA, parser);
+        }
+        return parser;
+    }
+
     public static IBodyParser multipart(String location, long maxFileSize, long maxRequestSize, int fileSizeThreshold) {
         IBodyParser parser = BodyParserFactory.parser(MULTIPART_FORM_DATA);
         if (parser == null) {

@@ -60,6 +60,8 @@ public interface IResponse {
 
     void render(String viewName);
 
+    void render(String viewName, Map<String, Object> context);
+
     void render(String viewName, BiConsumer<Exception, String> consumer);
 
     void render(String viewName, Map<String, Object> context, BiConsumer<Exception, String> consumer);

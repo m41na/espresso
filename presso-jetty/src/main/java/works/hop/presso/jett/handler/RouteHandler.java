@@ -16,10 +16,10 @@ import works.hop.presso.jett.application.PathUtils;
 import works.hop.presso.jett.request.Req;
 import works.hop.presso.jett.response.Res;
 import works.hop.presso.jett.routable.HandleNext;
+import works.hop.presso.jett.routable.MatchedInfo;
 
 import java.nio.charset.Charset;
 import java.util.Map;
-import java.util.Optional;
 import java.util.regex.Pattern;
 
 @RequiredArgsConstructor
@@ -87,17 +87,16 @@ public class RouteHandler extends AbstractHandler {
             }
 
             //Can this app be used to handle request?
-            IMatched matchedInfo = this.routable.select(ReqMethod.valueOf(request.getMethod().toUpperCase()), target);
+            ReqMethod method = ReqMethod.valueOf(request.getMethod().toUpperCase());
+            IMatched matchedInfo = this.routable.select(method, target);
             if (matchedInfo.getHandlers() != null) {
                 invokeHandler((IApplication) this.routable, target, baseRequest, matchedInfo);
             } else {
-                //Is there a sub-app which can be used instead?
+                //Is there a sub-app that can be used instead?
                 String fullTarget = String.format("/%s/%s", baseRequest.getContextPath(), target).replaceAll("/+", "/");
-                Optional<IApplication> subAppExists = lookupMatch((Application) this.routable, fullTarget);
+                IMatched matchedSub = lookupSubApp((Application) this.routable, method, fullTarget);
 
-                if (subAppExists.isPresent()) {
-                    IRoutable routable = (IRoutable) subAppExists.get();
-                    IMatched matchedSub = routable.select(ReqMethod.valueOf(request.getMethod().toUpperCase()), "/");
+                if (matchedSub.getHandlers() != null) {
                     invokeHandler((IApplication) routable, target, baseRequest, matchedSub);
                 } else {
                     Res res = new Res(null, baseRequest, baseRequest.getResponse());
@@ -109,25 +108,35 @@ public class RouteHandler extends AbstractHandler {
         }
     }
 
-    private Optional<IApplication> lookupMatch(Application root, String target) {
-        Optional<IApplication> foundOptional = root.getSubApplications().entrySet().stream()
-                .filter(entry -> {
-                            String fullPath = String.format("/%s/%s", root.getBasePath(), entry.getKey()).replaceAll("null", "").replaceAll("/+", "/");
-                            String regex = PathUtils.pathToRegex(fullPath);
-                            return Pattern.matches(regex, target);
-                        }
-                )
-                .map(Map.Entry::getValue)
-                .findFirst();
-
-        if (foundOptional.isEmpty()) {
-            for (IApplication subApp : root.getSubApplications().values()) {
-                Optional<IApplication> subFound = lookupMatch((Application) subApp, target);
-                if (subFound.isPresent()) {
-                    return subFound;
+    private IMatched lookupSubApp(Application root, ReqMethod method, String target) {
+        // look up sub-app having "/" before looking other sub-apps
+        for (Map.Entry<String, IApplication> entry : root.getSubApplications().entrySet()) {
+            Application application = (Application) entry.getValue();
+            if (entry.getKey().equals("/")) {
+                IMatched matched = application.select(method, target);
+                if (matched.getHandlers() != null) {
+                    return matched;
+                } else {
+                    //depth-first search on this child
+                    IMatched matchedSub = lookupSubApp(application, method, target);
+                    if (matchedSub.getHandlers() != null) {
+                        return matchedSub;
+                    }
+                }
+            } else {
+                String fullPath = String.format("/%s/%s", root.getBasePath(), entry.getKey())
+                        .replaceAll("null", "")
+                        .replaceAll("/+", "/");
+                String regex = PathUtils.pathToRegex(fullPath);
+                if (Pattern.matches(regex, target)) {
+                    //depth-first-search on the matched siblings
+                    IMatched matched = lookupSubApp(application, method, target);
+                    if (matched.getHandlers() != null) {
+                        return matched;
+                    }
                 }
             }
         }
-        return foundOptional;
+        return new MatchedInfo();
     }
 }

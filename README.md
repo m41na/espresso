@@ -644,7 +644,7 @@ public static void main(String[] args) {
 ##### void websocket(String contextPath, IWebsocketOptions options, Consumer<WebsocketHandlerCreator<?>> creator)
 
 Register a web socket handler which will connect and communicate with web socket clients. You __MUST__ provide an
-implementation for the method you want to be handled. The available handler methods are in the __IIWebsocketHandler__ 
+implementation for the method you want to be handled. The available handler methods are in the __IIWebsocketHandler__
 interface
 
 ```bash
@@ -662,7 +662,7 @@ interface IWebsocketHandler<S> {
 }
 ```
 
-There are also some other convenience methods which are available in the creator that can be used while registering the 
+There are also some other convenience methods which are available in the creator that can be used while registering the
 handler methods. These methods are:
 
 ```bash
@@ -676,9 +676,10 @@ boolean isNotConnected();
 ```
 
 An illustration for registering method handlers is shown below. Point worth noting:
+
 1. When registering a *subProtocol*, make sure it is matched in the client. __protocolOne__ is the default value
-2. When registering a *pulseInterval*, make sure it is less than the http connection timeout. __20000__ millis is the 
-default value, while __30000__ millis is the default http connection timeout.
+2. When registering a *pulseInterval*, make sure it is less than the http connection timeout. __20000__ millis is the
+   default value, while __30000__ millis is the default http connection timeout.
 
 ```bash
 public static void main(String[] args) {
