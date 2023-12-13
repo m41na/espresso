@@ -59,6 +59,6 @@ function sendText() {
     document.getElementById("message").value = "";
 }
 
-function closeConn(){
+function closeConn() {
     webSocket.close();
 }

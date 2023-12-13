@@ -4,6 +4,6 @@ include 'presso-jetty'
 include 'presso-game'
 include 'presso-cli'
 include 'presso-json'
-include 'presso-extn'
+include 'presso-mkdn'
 include 'presso-demos'
 

@@ -67,4 +67,7 @@ Docker*
 ## Git credentials
 .git_credentials
 
+## bash history
+**/.bash_history
+
 # End of https://www.topta

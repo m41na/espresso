@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>Web Socket Home</title>
-    <link rel="stylesheet" href="css/ws.css" />
+    <link href="css/ws.css" rel="stylesheet"/>
     <script defer src="js/ws.js"></script>
 </head>
 <body>
 <form id="chat-form">
-    <label for="message" autofocus tabindex="1"> Type your message here
-        <textarea rows="5" cols="100" id="message"></textarea>
+    <label autofocus for="message" tabindex="1"> Type your message here
+        <textarea cols="100" id="message" rows="5"></textarea>
     </label>
-    <input type="button" value="Send" tabindex="2" onclick="sendText()"/>
+    <input onclick="sendText()" tabindex="2" type="button" value="Send"/>
 </form>
 <div id="chat-messages"></div>
 </body>
