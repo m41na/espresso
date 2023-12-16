@@ -25,6 +25,10 @@ dependencies {
     // cli options
     implementation 'commons-cli:commons-cli:1.5.0'
 
+    // js context
+    implementation 'org.graalvm.polyglot:polyglot:23.1.0'
+    implementation 'org.graalvm.polyglot:js:23.1.0'
+
     // lombok
     compileOnly 'org.projectlombok:lombok:1.18.30'
     annotationProcessor 'org.projectlombok:lombok:1.18.30'

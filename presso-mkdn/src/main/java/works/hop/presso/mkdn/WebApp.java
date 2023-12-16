@@ -11,9 +11,7 @@ import works.hop.presso.jett.Espresso;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 
 public class WebApp {
@@ -42,6 +40,7 @@ public class WebApp {
                 .baseDirectory(baseDir)
                 .welcomeFiles(welcomeFile)
                 .build());
+        app.use(Espresso.json());
 
         app.get("/.*\\.md", (req, res, next) -> {
             String page = req.path();
@@ -61,12 +60,12 @@ public class WebApp {
             String path = req.path().replace(".list", "");
             File directory = Path.of(baseDir, pagesDir, path).toFile();
             try {
-                List<String> listing = new ArrayList<>();
+                Map<String, List<Object>> listing = new LinkedHashMap<>();
                 listFiles(
                         directory,
                         listing,
-                        filePath -> filePath.substring(filePath.indexOf(Path.of(baseDir).toString())));
-                res.send(String.join("\n", listing));
+                        filePath -> filePath.substring(filePath.indexOf(Path.of(pagesDir).toString())));
+                res.json(listing);
             } catch (Exception e) {
                 next.error("404", new RuntimeException(e.getMessage()));
             }
@@ -76,16 +75,18 @@ public class WebApp {
         app.listen(hostName, port, System.out::println);
     }
 
-    static void listFiles(File directory, List<String> files, Function<String, String> process) {
-        File[] list = directory.listFiles();
-        if (list != null) {
-            for (File file : list) {
-                if (!file.isHidden()) {
+    static void listFiles(File directory, Map<String, List<Object>> listing, Function<String, String> process) {
+        if(directory.isDirectory() && !directory.isHidden()){
+            listing.put(directory.getName(), new LinkedList<>());
+            File[] list = directory.listFiles();
+            if (list != null) {
+                for (File file : list) {
                     if (file.isFile()) {
-                        files.add("-" + process.apply(file.getAbsolutePath()));
+                        listing.get(directory.getName()).add(process.apply(file.getAbsolutePath()));
                     } else if (file.isDirectory()) {
-                        files.add("+" + process.apply(file.getAbsolutePath()));
-                        listFiles(file, files, process);
+                        Map<String, List<Object>> sublist = new LinkedHashMap<>();
+                        listFiles(file, sublist, process);
+                        listing.get(directory.getName()).add(sublist);
                     }
                 }
             }

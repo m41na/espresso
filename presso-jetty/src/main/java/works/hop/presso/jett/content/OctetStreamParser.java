@@ -23,7 +23,7 @@ public class OctetStreamParser implements IBodyParser {
 
     @Override
     public void write(IResponse response, Object data) {
-        response.append(HttpHeader.CONTENT_TYPE.name(), APPLICATION_OCTET_STREAM);
+        response.append(HttpHeader.CONTENT_TYPE.name(), contentType());
         response.writeSync(data);
         response.end();
     }

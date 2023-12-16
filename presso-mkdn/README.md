@@ -32,7 +32,7 @@ syntax so that bash can expand those properties
 ```bash
 ENV HOME=/opt/app/www
 ENV PAGES=pages
-ENV WELCOME=index.html
+ENV WELCOME=index-1.html
 ENV PORT=9080
 ENV HOST=0.0.0.0
 ...

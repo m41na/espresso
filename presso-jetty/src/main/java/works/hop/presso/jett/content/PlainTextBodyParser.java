@@ -26,7 +26,7 @@ public class PlainTextBodyParser implements IBodyParser {
 
     @Override
     public void write(IResponse response, Object data) {
-        response.append(HttpHeader.CONTENT_TYPE.name(), TEXT_PLAIN);
+        response.append(HttpHeader.CONTENT_TYPE.name(), contentType());
         response.encoding(Charset.defaultCharset());
         response.writeSync(data.toString());
         response.end();
