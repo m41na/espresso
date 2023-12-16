@@ -1,6 +1,6 @@
 ## CMD and ENTRYPOINT
 
-When you use both ENTRYPOINT and CMD in a Dockerfile, the command section will be appended to the entrypoint executable 
+When you use both ENTRYPOINT and CMD in a Dockerfile, the command section will be appended to the entrypoint executable
 as arguments. Thus considering the following example:
 
 ```bash
@@ -12,7 +12,7 @@ It is equivalent to running:
 
 ```ENTRYPOINT["/start.sh", "aptly", "api", "serve"]```
 
-Bear in mind that to use ENTRYPOINT and CMD together, you need to specify both in the array format. Doing something 
+Bear in mind that to use ENTRYPOINT and CMD together, you need to specify both in the array format. Doing something
 like this WILL NOT WORK:
 
 ```bash
@@ -20,13 +20,13 @@ ENTRYPOINT ./my_script.sh
 CMD echo "hello world"
 ```
 
-To override the ENTRYPOINT and its arguments when invoking *docker run* you will need to explicitly use the 
+To override the ENTRYPOINT and its arguments when invoking *docker run* you will need to explicitly use the
 *--entrypoint* flag:
 
-Images can only have one ENTRYPOINT. If you repeat the Dockerfile instruction more than once, the last one will apply. 
+Images can only have one ENTRYPOINT. If you repeat the Dockerfile instruction more than once, the last one will apply.
 When an image is created without an ENTRYPOINT, Docker defaults to using /bin/sh -c.
 
-When you have command line arguments that need to be resolved when starting a container, you need to use the non-array 
+When you have command line arguments that need to be resolved when starting a container, you need to use the non-array
 syntax so that bash can expand those properties
 
 ```bash
@@ -44,5 +44,5 @@ In doing this, you can then override any ENV argument when starting the containe
 
 ```docker run -d -p 9991:9991 -v .\www:/opt/app/www -e PORT=9991 java-mkdn-web:latest```
 
-**Pay careful attention** to the use of *"./www"* vs *".\www"* when mapping the volume drives. It makes a world of a 
+**Pay careful attention** to the use of *"./www"* vs *".\www"* when mapping the volume drives. It makes a world of a
 difference depending on what kind of terminal you are executing the ```dockr run``` command. 

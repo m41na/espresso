@@ -76,7 +76,7 @@ public class WebApp {
     }
 
     static void listFiles(File directory, Map<String, List<Object>> listing, Function<String, String> process) {
-        if(directory.isDirectory() && !directory.isHidden()){
+        if (directory.isDirectory() && !directory.isHidden()) {
             listing.put(directory.getName(), new LinkedList<>());
             File[] list = directory.listFiles();
             if (list != null) {

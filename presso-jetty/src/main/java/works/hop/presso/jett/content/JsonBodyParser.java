@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 
 import static works.hop.presso.api.content.IContentType.APPLICATION_JSON;
-import static works.hop.presso.api.content.IContentType.TEXT_PLAIN;
 
 public class JsonBodyParser implements IBodyParser {
 
