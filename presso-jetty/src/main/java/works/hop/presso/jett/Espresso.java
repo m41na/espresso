@@ -1,16 +1,17 @@
 package works.hop.presso.jett;
 
+import org.eclipse.jetty.alpn.server.ALPNServerConnectionFactory;
 import org.eclipse.jetty.http.HttpCompliance;
-import org.eclipse.jetty.server.HttpConfiguration;
-import org.eclipse.jetty.server.HttpConnectionFactory;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.http2.server.HTTP2ServerConnectionFactory;
+import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.*;
+import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import works.hop.presso.api.application.AppSettings;
 import works.hop.presso.api.application.IApplication;
 import works.hop.presso.api.content.IBodyParser;
 import works.hop.presso.api.servable.IStaticOptions;
+import works.hop.presso.cli.StartUp;
 import works.hop.presso.jett.application.Application;
 import works.hop.presso.jett.application.PathUtils;
 import works.hop.presso.jett.config.ConfigMap;
@@ -140,29 +141,102 @@ public class Espresso {
         return contextHandler;
     }
 
+    public static Server create(String host, int port, IApplication entryApp) {
+        //extract startup options
+        StartUp props = StartUp.instance();
+
+        // extract startup values
+        String hostName = props.getOrDefault("host", host);
+        int httpPort = props.getOrDefault("port", port, Integer::parseInt);
+        int httpsPort = props.getOrDefault("securePort", 443, Integer::parseInt);
+        String certPath = props.getOrDefault("keystorePath", props.cacertsPath());
+        String certPass = props.getOrDefault("keystorePass", props.defaultPass());
+
+        //create thread-pool
+        QueuedThreadPool threadPool = new QueuedThreadPool();
+        threadPool.setName(SERVER_NAME);
+        Server server = new Server(threadPool);
+        Runtime.getRuntime().addShutdownHook(new Thread(scheduler::shutdown));
+        // apply the connectors
+        server.setConnectors(new Connector[]{
+                createHttpConnector(hostName, httpPort, httpsPort, server, entryApp),
+                createHttpsConnector(httpsPort, certPath, certPass, server)
+        });
+
+        return server;
+    }
+
+    private static ServerConnector createHttpConnector(String host, int httpPort, int httpsPort, Server server, IApplication entryApp) {
+        // The HTTP configuration object.
+        HttpConfiguration httpConfig = createHttpConfiguration(httpsPort);
+
+        // The ConnectionFactory for HTTP/1.1.
+        HttpConnectionFactory http11 = new HttpConnectionFactory(httpConfig);
+        // create the connector:
+        ServerConnector httpConnector = new ServerConnector(server,
+                Integer.parseInt(((Application) entryApp).getSettings().get(AppSettings.Setting.ACCEPTOR_THREADS).toString()),
+                Integer.parseInt(((Application) entryApp).getSettings().get(AppSettings.Setting.SELECTOR_THREADS).toString()),
+                http11);
+        httpConnector.setAcceptQueueSize(Integer.parseInt(((Application) entryApp).getSettings().get(AppSettings.Setting.ACCEPT_QUEUE_SIZE).toString()));
+
+        // set the connector's port:
+        httpConnector.setHost(host);
+        httpConnector.setPort(httpPort);
+
+        return httpConnector;
+    }
+
+    private static ServerConnector createHttpsConnector(int httpsPort, String certPath, String certPass, Server server) {
+        // The HTTP configuration object.
+        HttpConfiguration httpConfig = createHttpConfiguration(httpsPort);
+        httpConfig.addCustomizer(createSecureRequestCustomizer());
+
+        // HTTP/1.1:
+        HttpConnectionFactory http11 = new HttpConnectionFactory(httpConfig);
+        // HTTP/2 connections:
+        HTTP2ServerConnectionFactory http2 = new HTTP2ServerConnectionFactory(httpConfig);
+        // ALPN - a TLS extension:
+        ALPNServerConnectionFactory alpn = new ALPNServerConnectionFactory();
+        alpn.setDefaultProtocol(http11.getProtocol()); // fallback protocol
+
+        // add SSL/TLS:
+        SslContextFactory.Server sslContextFactory = getSslContextFactory(certPath, certPass);
+        SslConnectionFactory tls = new SslConnectionFactory(sslContextFactory, alpn.getProtocol());
+        DetectorConnectionFactory conFactory = new DetectorConnectionFactory(tls);
+        // create the connector:
+        ServerConnector httpsConnector = new ServerConnector(server, conFactory, alpn, http2, http11);
+        // set the connector's port:
+        httpsConnector.setPort(httpsPort);
+
+        return httpsConnector;
+    }
+
+    private static HttpConfiguration createHttpConfiguration(int httpsPort) {
+        HttpConfiguration httpConfig = new HttpConfiguration();
+        httpConfig.setSendServerVersion(false);
+        httpConfig.setSecurePort(httpsPort);
+        httpConfig.setSecureScheme("https");
+        httpConfig.setHttpCompliance(HttpCompliance.RFC7230);
+        return httpConfig;
+    }
+
+    private static SecureRequestCustomizer createSecureRequestCustomizer() {
+        SecureRequestCustomizer src = new SecureRequestCustomizer();
+        // customize for additional configuration
+        src.setSniHostCheck(false); //NOTE: Only for testing. For PROD, do not set to false
+        return src;
+    }
+
+    private static SslContextFactory.Server getSslContextFactory(String certPath, String certPass) {
+        SslContextFactory.Server sslContextFactory = new SslContextFactory.Server();
+        sslContextFactory.setKeyStorePath(certPath);
+        sslContextFactory.setKeyStorePassword(certPass);
+        return sslContextFactory;
+    }
+
     public static void startServer(String host, int port, Consumer<String> callback, IApplication entryApp) {
         try {
-            //create thread-pool
-            QueuedThreadPool threadPool = new QueuedThreadPool();
-            threadPool.setName(SERVER_NAME);
-            Server server = new Server(threadPool);
-            Runtime.getRuntime().addShutdownHook(new Thread(scheduler::shutdown));
-
-            // The HTTP configuration object.
-            HttpConfiguration httpConfig = new HttpConfiguration();
-            httpConfig.setHttpCompliance(HttpCompliance.RFC7230); //accept legacy connections
-            // The ConnectionFactory for HTTP/1.1.
-            HttpConnectionFactory http11 = new HttpConnectionFactory(httpConfig);
-
-            //create connector
-            ServerConnector connector = new ServerConnector(server,
-                    Integer.parseInt(((Application) entryApp).getSettings().get(AppSettings.Setting.ACCEPTOR_THREADS).toString()),
-                    Integer.parseInt(((Application) entryApp).getSettings().get(AppSettings.Setting.SELECTOR_THREADS).toString()),
-                    http11);
-            connector.setAcceptQueueSize(Integer.parseInt(((Application) entryApp).getSettings().get(AppSettings.Setting.ACCEPT_QUEUE_SIZE).toString()));
-            connector.setHost(host);
-            connector.setPort(port);
-            server.addConnector(connector);
+            Server server = create(host, port, entryApp);
 
             // figure out mounted paths
             List<String> mountPaths = new LinkedList<>();
@@ -171,12 +245,18 @@ public class Espresso {
             Set<String> pathPrefixes = PathUtils.longestPathPrefix(pathPatterns.values());
 
             // register context handlers with the context collection
-            configureContextHandler(entryApp, pathPrefixes, ctxHandlers);
+            configureContextHandler(entryApp, pathPrefixes);
             for (IApplication application : ((Application) entryApp).getSubApplications().values()) {
-                configureContextHandler(application, pathPrefixes, ctxHandlers);
+                configureContextHandler(application, pathPrefixes);
             }
 
-            // add ContextHandlerCollection to handler list
+            // if using secure protocol, rewrite url to https
+            Boolean redirectSecure = StartUp.instance().getOrDefault("redirectSecure", false, Boolean::parseBoolean);
+            if (redirectSecure) {
+                handlerList.addHandler(new SecuredRedirectHandler());
+            }
+
+            // add ContextHandlerCollection to the handler list
             handlerList.addHandler(ctxHandlers);
 
             // set default handler
@@ -195,7 +275,7 @@ public class Espresso {
         }
     }
 
-    private static void configureContextHandler(IApplication application, Set<String> pathPrefixes, ContextHandlerCollection ctxHandlers) {
+    private static void configureContextHandler(IApplication application, Set<String> pathPrefixes) {
         String ctxPath = application.mountPath() != null ?
                 Stream.of(new String[]{"*", "?", "+"}).anyMatch(ch -> application.mountPath().contains(ch)) ?
                         application.mountPath().replaceAll(PATH_SEGMENT, "") :
@@ -205,7 +285,7 @@ public class Espresso {
         if (pathPrefixes.contains(ctxPath)) {
             ContextHandler ctxHandler = new ContextHandler(ctxPath);
             ctxHandler.setHandler(new RouteHandler((Application) application));
-            ctxHandlers.addHandler(ctxHandler);
+            Espresso.ctxHandlers.addHandler(ctxHandler);
             pathPrefixes.remove(ctxPath);
         }
     }

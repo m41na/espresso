@@ -1,39 +1,40 @@
 package works.hop.presso.mkdn;
 
-import org.apache.commons.cli.*;
 import org.commonmark.node.Node;
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
 import works.hop.presso.api.application.IApplication;
 import works.hop.presso.api.servable.IStaticOptionsBuilder;
+import works.hop.presso.cli.OptBuilder;
+import works.hop.presso.cli.StartUp;
 import works.hop.presso.jett.Espresso;
 
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 public class WebApp {
 
-    public static void main(String[] args) throws ParseException {
-        final Options options = new Options();
+    public static void main(String[] args) {
+        final OptBuilder options = OptBuilder.newBuilder();
         System.out.println(args.length);
-        Arrays.stream(args).forEach(System.out::println);
-        options.addOption("h", "home", true, "home dir path");
-        options.addOption("p", "pages", true, "pages folder");
-        options.addOption("w", "welcome", true, "html landing page");
-        options.addOption("port", true, "listening port");
-        options.addOption("host", true, "application host");
+        options.add("d", "drive", true, "drive name for home dir");
+        options.add("h", "home", true, "home dir path");
+        options.add("p", "pages", true, "pages folder");
+        options.add("w", "welcome", true, "html landing page");
+        StartUp props = StartUp.load(options, args);
 
-        CommandLineParser cmdParser = new DefaultParser();
-        CommandLine cmd = cmdParser.parse(options, args);
-
-        String baseDir = cmd.getOptionValue("h", "presso-mkdn/www");
-        String pagesDir = cmd.getOptionValue("p", "pages");
-        String welcomeFile = cmd.getOptionValue("w", "index.html");
-        String portNum = cmd.getOptionValue("port", "9080");
-        String hostName = cmd.getOptionValue("host", "localhost");
+        String dirDrive = props.getOptionValue("d");
+        String baseDir = props.getOrDefault("h", "U:\\11ty-site\\public");
+        String pagesDir = props.getOrDefault("p", "posts");
+        String welcomeFile = props.getOrDefault("w", "index.html");
+        int httpPort = props.getOrDefault("port", 9080, Integer::parseInt);
+        String hostName = props.getOrDefault("host", "localhost");
 
         IApplication app = Espresso.express();
         app.use("/", IStaticOptionsBuilder.newBuilder()
@@ -44,10 +45,12 @@ public class WebApp {
 
         app.get("/.*\\.md", (req, res, next) -> {
             String page = req.path();
-            Path resource = Path.of(baseDir, pagesDir, page);
+            Path resourcePath = dirDrive != null
+                    ? Path.of(dirDrive, baseDir, pagesDir, page)
+                    : Path.of(baseDir, pagesDir, page);
             try {
                 Parser parser = Parser.builder().build();
-                Node document = parser.parse(Files.readString(resource));
+                Node document = parser.parse(Files.readString(resourcePath));
                 HtmlRenderer renderer = HtmlRenderer.builder().build();
                 String markup = renderer.render(document);
                 res.send(markup);
@@ -58,7 +61,10 @@ public class WebApp {
 
         app.get("/.*\\.list", (req, res, next) -> {
             String path = req.path().replace(".list", "");
-            File directory = Path.of(baseDir, pagesDir, path).toFile();
+            Path resourcePath = dirDrive != null
+                    ? Path.of(dirDrive, baseDir, pagesDir, path)
+                    : Path.of(baseDir, pagesDir, path);
+            File directory = resourcePath.toFile();
             try {
                 Map<String, List<Object>> listing = new LinkedHashMap<>();
                 listFiles(
@@ -71,8 +77,7 @@ public class WebApp {
             }
         });
 
-        int port = Integer.parseInt(portNum);
-        app.listen(hostName, port, System.out::println);
+        app.listen(hostName, httpPort, System.out::println);
     }
 
     static void listFiles(File directory, Map<String, List<Object>> listing, Function<String, String> process) {

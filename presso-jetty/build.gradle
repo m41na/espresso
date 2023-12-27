@@ -11,6 +11,7 @@ repositories {
 
 dependencies {
     implementation project(':presso-api')
+    implementation project(':presso-cli')
     implementation 'org.eclipse.jetty:jetty-server:11.0.16'
     implementation 'org.eclipse.jetty.websocket:websocket-jetty-api:11.0.16'
     implementation 'org.eclipse.jetty.websocket:websocket-jetty-server:11.0.16'

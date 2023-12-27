@@ -1,6 +1,5 @@
 package works.hop.presso.api.servable;
 
-import java.io.File;
 import java.nio.file.Path;
 
 public class IStaticOptionsBuilder {
@@ -21,7 +20,7 @@ public class IStaticOptionsBuilder {
     }
 
     public IStaticOptionsBuilder baseDirectory(String directory) {
-        if (new File(directory).exists()) {
+        if (Path.of(directory).toFile().exists()) {
             this.baseDirectory = directory;
             return this;
         } else {

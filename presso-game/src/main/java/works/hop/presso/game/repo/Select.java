@@ -27,7 +27,7 @@ public class Select {
     }
 
     private static void select(Connection conn, String query, Object[] params, BiConsumer<Throwable, Object> result) throws SQLException, JsonProcessingException {
-        String queryString = String.format("select json_agg(result) as json from (%s) as result", query);
+        String queryString = String.format("select json_agg(result.*) as json from (%s) as result", query);
         try (PreparedStatement ps = conn.prepareStatement(queryString)) {
             for (int i = 0; i < params.length; i++) {
                 ps.setObject(i + 1, params[i]);

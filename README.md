@@ -959,3 +959,14 @@ public static void main(String[] args) {
     app.listen(3000);
 }
 ```
+
+## Startup Option
+
+These are defined and documented in the __OptBuilder__ class
+
+1. __host__ - hostname or IP of computer running applications
+2. __port__ - tcp port where application is listening for client requests
+3. __securePort__ - ssl tcp port where application is listening for client requests
+4. __keystorePath__ - file system path to server truststore
+5. __keystorePass__ - password for server truststore
+
