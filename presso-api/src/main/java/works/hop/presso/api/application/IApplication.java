@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-public interface IApplication extends IRouter {
+public interface IApplication extends IRouter, ILifeCycle {
 
     Map<String, Object> locals();
 
@@ -34,6 +34,8 @@ public interface IApplication extends IRouter {
     void enable(String setting);
 
     boolean enabled(String setting);
+
+    void engine(String engine, String templateDir, String fileExt);
 
     void engine(IViewEngine engine, String fileExt);
 

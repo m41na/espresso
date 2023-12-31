@@ -1,6 +1,5 @@
-package works.hop.presso.jett.view;
+package works.hop.presso.view.mvel;
 
-import lombok.RequiredArgsConstructor;
 import org.mvel2.templates.*;
 import works.hop.presso.api.application.AppSettings;
 import works.hop.presso.api.view.IViewEngine;
@@ -9,15 +8,19 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.Map;
 
-@RequiredArgsConstructor
 public class MvelViewEngine implements IViewEngine {
 
-    final String templateDir;
     final TemplateRegistry registry = new SimpleTemplateRegistry();
+    private String templateDir;
 
     @Override
     public String name() {
         return MVEL;
+    }
+
+    @Override
+    public void templateDir(String dirName) {
+        this.templateDir = dirName;
     }
 
     @Override

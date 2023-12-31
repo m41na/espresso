@@ -152,6 +152,9 @@ public class Espresso {
         String certPath = props.getOrDefault("keystorePath", props.cacertsPath());
         String certPass = props.getOrDefault("keystorePass", props.defaultPass());
 
+        //before loading plugins
+        entryApp.beforeLoadPlugins();
+
         //create thread-pool
         QueuedThreadPool threadPool = new QueuedThreadPool();
         threadPool.setName(SERVER_NAME);
@@ -237,6 +240,7 @@ public class Espresso {
     public static void startServer(String host, int port, Consumer<String> callback, IApplication entryApp) {
         try {
             Server server = create(host, port, entryApp);
+            entryApp.onLoadPlugins();
 
             // figure out mounted paths
             List<String> mountPaths = new LinkedList<>();

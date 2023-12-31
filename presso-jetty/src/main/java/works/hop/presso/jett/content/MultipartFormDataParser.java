@@ -18,6 +18,10 @@ import static works.hop.presso.api.content.IContentType.MULTIPART_FORM_DATA;
 public class MultipartFormDataParser implements IBodyParser {
     private final MultipartConfigElement multiPartConfig;
 
+    public MultipartFormDataParser(){
+        this(System.getProperty("java.io.tmpdir"));
+    }
+
     public MultipartFormDataParser(String location) {
         this(location, 10_000_000, 10_000_000, 10_000_000);
     }
@@ -36,7 +40,7 @@ public class MultipartFormDataParser implements IBodyParser {
         Map<String, Object> content = new HashMap<>();
         request.setAttr(Request.__MULTIPART_CONFIG_ELEMENT, multiPartConfig);
 
-        // creates the save directory if it does not exists
+        // creates the save directory if it does not exist
         File fileSaveDir = new File(multiPartConfig.getLocation());
         if (!fileSaveDir.exists()) {
             assert fileSaveDir.mkdirs();

@@ -1,6 +1,7 @@
 package works.hop.presso.jett.application;
 
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.server.handler.HandlerList;
@@ -36,6 +37,7 @@ import java.util.function.Consumer;
 import static works.hop.presso.jett.config.ConfigMap.MULTIPART_CONFIG;
 
 @Getter
+@Slf4j
 public class Application extends Router implements IApplication, Cloneable {
 
     @Getter
@@ -47,6 +49,7 @@ public class Application extends Router implements IApplication, Cloneable {
 
     public Application() {
         this.errorHandlers.add(new DefaultErrHandler());
+        this.onInitApplication();
     }
 
     public ContextHandlerCollection getCtxHandlers() {
@@ -115,11 +118,18 @@ public class Application extends Router implements IApplication, Cloneable {
     }
 
     @Override
+    public void engine(String engine, String templateDir, String fileExt) {
+        this.set(AppSettings.Setting.TEMPLATES_DIR.property, templateDir);
+        this.set(AppSettings.Setting.VIEW_ENGINE.property, engine);
+        this.set(AppSettings.Setting.TEMPLATES_EXT.property, fileExt);
+    }
+
+    @Override
     public void engine(IViewEngine engine, String fileExt) {
         this.set(AppSettings.Setting.TEMPLATES_DIR.property, engine.templateDir());
         this.set(AppSettings.Setting.VIEW_ENGINE.property, engine.name());
         this.set(AppSettings.Setting.TEMPLATES_EXT.property, fileExt);
-        ViewEngineFactory.register(engine.name(), engine);
+//        ViewEngineFactory.register(engine.name(), engine);
     }
 
     @Override
@@ -277,5 +287,30 @@ public class Application extends Router implements IApplication, Cloneable {
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();
         }
+    }
+
+    @Override
+    public void onInitApplication() {
+        log.info("**onInitApplication**");
+    }
+
+    @Override
+    public void beforeLoadPlugins() {
+        log.info("**beforeLoadPlugins**");
+    }
+
+    @Override
+    public void onLoadPlugins() {
+        log.info("**onLoadPlugins**");
+    }
+
+    @Override
+    public void beforeReloadPlugins() {
+        log.info("**beforeReloadPlugins**");
+    }
+
+    @Override
+    public void onReloadPlugins() {
+        log.info("**onReloadPlugins**");
     }
 }
