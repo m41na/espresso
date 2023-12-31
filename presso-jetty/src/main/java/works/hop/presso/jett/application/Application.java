@@ -1,7 +1,6 @@
 package works.hop.presso.jett.application;
 
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.server.handler.HandlerList;
@@ -37,7 +36,6 @@ import java.util.function.Consumer;
 import static works.hop.presso.jett.config.ConfigMap.MULTIPART_CONFIG;
 
 @Getter
-@Slf4j
 public class Application extends Router implements IApplication, Cloneable {
 
     @Getter
@@ -49,7 +47,6 @@ public class Application extends Router implements IApplication, Cloneable {
 
     public Application() {
         this.errorHandlers.add(new DefaultErrHandler());
-        this.onInitApplication();
     }
 
     public ContextHandlerCollection getCtxHandlers() {
@@ -287,30 +284,5 @@ public class Application extends Router implements IApplication, Cloneable {
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();
         }
-    }
-
-    @Override
-    public void onInitApplication() {
-        log.info("**onInitApplication**");
-    }
-
-    @Override
-    public void beforeLoadPlugins() {
-        log.info("**beforeLoadPlugins**");
-    }
-
-    @Override
-    public void onLoadPlugins() {
-        log.info("**onLoadPlugins**");
-    }
-
-    @Override
-    public void beforeReloadPlugins() {
-        log.info("**beforeReloadPlugins**");
-    }
-
-    @Override
-    public void onReloadPlugins() {
-        log.info("**onReloadPlugins**");
     }
 }

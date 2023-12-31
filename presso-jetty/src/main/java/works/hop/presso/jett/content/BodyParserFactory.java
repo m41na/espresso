@@ -20,8 +20,7 @@ public class BodyParserFactory {
     public static IBodyParser parser(String contentType) {
         if (parsers.containsKey(contentType)) {
             return parsers.get(contentType);
-        } else {
-            return parsers.values().stream().filter(value -> contentType.contains(value.contentType())).findAny().orElse(null);
         }
+        throw new NullPointerException(String.format("There is no content parser configured for the type %s", contentType));
     }
 }

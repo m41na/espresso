@@ -1,6 +1,6 @@
 package works.hop.presso.jett.plugin;
 
-import works.hop.presso.api.plugin.Plugin;
+import works.hop.presso.api.plugin.IPlugin;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,9 +13,9 @@ import java.util.Set;
 
 public class PluginsDirectory {
 
-    private final static Set<Plugin<?>> pluginLoaders = new HashSet<>();
+    private final static Set<IPlugin<?>> pluginLoaders = new HashSet<>();
 
-    private PluginsDirectory(){
+    private PluginsDirectory() {
         //hide constructor
     }
 
@@ -28,7 +28,7 @@ public class PluginsDirectory {
             urls[i] = jars[i].toURI().toURL();
         URLClassLoader ucl = new URLClassLoader(urls);
 
-        ServiceLoader<Plugin> service = ServiceLoader.load(Plugin.class, ucl);
+        ServiceLoader<IPlugin> service = ServiceLoader.load(IPlugin.class, ucl);
 //        new PluginLoader(service, pluginLoaders::add) {
 //            @Override
 //            public String name() {
@@ -37,8 +37,8 @@ public class PluginsDirectory {
 //        };
     }
 
-    public static void list(){
-        for (Plugin<?> loader : pluginLoaders){
+    public static void list() {
+        for (IPlugin<?> loader : pluginLoaders) {
 //            loader.list();
         }
     }

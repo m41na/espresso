@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-public interface IApplication extends IRouter, ILifeCycle {
+public interface IApplication extends IRouter {
 
     Map<String, Object> locals();
 

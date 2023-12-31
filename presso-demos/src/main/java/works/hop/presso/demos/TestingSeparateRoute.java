@@ -1,6 +1,5 @@
 package works.hop.presso.demos;
 
-import works.hop.presso.api.application.AppSettings;
 import works.hop.presso.api.view.IViewEngine;
 import works.hop.presso.jett.Espresso;
 
