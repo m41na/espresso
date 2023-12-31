@@ -12,6 +12,8 @@ public interface IViewEngine {
 
     String name();
 
+    void templateDir(String dirName);
+
     String templateDir();
 
     String mergeTemplate(String fileName, Map<String, Object> model) throws IOException;

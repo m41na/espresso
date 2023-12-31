@@ -1,5 +1,5 @@
 CREATE
-EXTENSION IF NOT EXISTS "uuid-ossp";
+    EXTENSION IF NOT EXISTS "uuid-ossp";
 
 drop table if exists tbl_clues;
 drop table if exists tbl_choices;

@@ -232,6 +232,11 @@ public class Req implements IRequest {
         return baos.toByteArray();
     }
 
+    @Override
+    public <R> R rawRequest(Class<R> type) {
+        return type.cast(this.request);
+    }
+
     public Collection<Part> getParts() throws ServletException, IOException {
         return this.request.getParts();
     }

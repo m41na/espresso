@@ -1,12 +1,13 @@
-package works.hop.presso.jett.content;
+package works.hop.presso.plugin.content.multipart;
 
 import jakarta.servlet.MultipartConfigElement;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Part;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jetty.server.Request;
 import works.hop.presso.api.content.IBodyParser;
 import works.hop.presso.api.request.IRequest;
-import works.hop.presso.jett.request.Req;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -15,14 +16,21 @@ import java.util.Map;
 
 import static works.hop.presso.api.content.IContentType.MULTIPART_FORM_DATA;
 
+@Slf4j
 public class MultipartFormDataParser implements IBodyParser {
-    private final MultipartConfigElement multiPartConfig;
+    @Setter
+    String location = System.getProperty("java.io.tmpdir");
+    @Setter
+    long maxFileSize = 10_000_000;
+    @Setter
+    long maxRequestSize = 10_000_000;
+    @Setter
+    int fileSizeThreshold = 10_000_000;
+    private MultipartConfigElement multiPartConfig;
 
-    public MultipartFormDataParser(String location) {
-        this(location, 10_000_000, 10_000_000, 10_000_000);
-    }
-
-    public MultipartFormDataParser(String location, long maxFileSize, long maxRequestSize, int fileSizeThreshold) {
+    @Override
+    public void init(Map<String, Object> params) {
+        log.info("Initializing {}".getClass().getName());
         this.multiPartConfig = new MultipartConfigElement(location, maxFileSize, maxRequestSize, fileSizeThreshold);
     }
 
@@ -36,17 +44,15 @@ public class MultipartFormDataParser implements IBodyParser {
         Map<String, Object> content = new HashMap<>();
         request.setAttr(Request.__MULTIPART_CONFIG_ELEMENT, multiPartConfig);
 
-        // creates the save directory if it does not exists
+        // creates the save directory if it does not exist
         File fileSaveDir = new File(multiPartConfig.getLocation());
-        if (!fileSaveDir.exists()) {
-            assert fileSaveDir.mkdirs();
-        }
+        assert fileSaveDir.exists() || fileSaveDir.mkdirs();
         // make sure the file is writable
         assert fileSaveDir.setWritable(true);
 
         String fileName;
         try {
-            for (Part part : ((Req) request).getParts()) {
+            for (Part part : request.rawRequest(Request.class).getParts()) {
                 if (part.getContentType() != null) {
                     fileName = getFileName(part);
                     String savePath = fileSaveDir.getAbsolutePath() + File.separator + fileName;

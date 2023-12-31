@@ -11,18 +11,8 @@ public class ViewEngineFactory {
 
     public static IViewEngine engine(String name, String templateDir) {
         if (factories.containsKey(name)) {
-            return factories.get(name);
-        }
-
-        if (IViewEngine.MVEL.equals(name)) {
-            IViewEngine viewEngine = factories.getOrDefault(name, new MvelViewEngine(templateDir));
-            register(name, viewEngine);
-            return viewEngine;
-        }
-
-        if (IViewEngine.PEBBLE.equals(name)) {
-            IViewEngine viewEngine = factories.getOrDefault(name, new PebbleViewEngine(templateDir));
-            register(name, viewEngine);
+            IViewEngine viewEngine = factories.get(name);
+            viewEngine.templateDir(templateDir);
             return viewEngine;
         }
 

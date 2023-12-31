@@ -1,15 +1,23 @@
-package works.hop.presso.jett.content;
+package works.hop.presso.plugin.content.form;
 
+import lombok.extern.slf4j.Slf4j;
 import works.hop.presso.api.content.IBodyParser;
 import works.hop.presso.api.request.IRequest;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static works.hop.presso.api.content.IContentType.FORM_URL_ENCODED;
 
+@Slf4j
 public class FormUrlEncodedParser implements IBodyParser {
+
+    @Override
+    public void init(Map<String, Object> params) {
+        log.info("Initializing {}".getClass().getName());
+    }
 
     @Override
     public String contentType() {

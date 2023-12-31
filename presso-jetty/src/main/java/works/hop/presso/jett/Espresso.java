@@ -10,19 +10,20 @@ import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import works.hop.presso.api.application.AppSettings;
 import works.hop.presso.api.application.IApplication;
 import works.hop.presso.api.content.IBodyParser;
+import works.hop.presso.api.plugin.IPluginLifecycle;
 import works.hop.presso.api.servable.IStaticOptions;
 import works.hop.presso.cli.StartUp;
 import works.hop.presso.jett.application.Application;
 import works.hop.presso.jett.application.PathUtils;
 import works.hop.presso.jett.config.ConfigMap;
-import works.hop.presso.jett.content.*;
+import works.hop.presso.jett.content.BodyParserFactory;
 import works.hop.presso.jett.handler.RouteHandler;
+import works.hop.presso.jett.lifecycle.BodyParserCallback;
+import works.hop.presso.jett.lifecycle.PluginLifecycle;
+import works.hop.presso.jett.lifecycle.ViewEnginesCallback;
 import works.hop.presso.jett.servable.StaticOptionsBuilder;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Consumer;
@@ -39,6 +40,7 @@ public class Espresso {
     private static final AppSettings settings = new AppSettings();
     private static final ContextHandlerCollection ctxHandlers = new ContextHandlerCollection();
     private static final HandlerList handlerList = new HandlerList();
+    private static final IPluginLifecycle pluginLifecycle = new PluginLifecycle();
     private static final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
     private Espresso() {
@@ -47,7 +49,7 @@ public class Espresso {
 
     public static IApplication express() {
 
-        return new Application() {
+        IApplication application = new Application() {
 
             @Override
             public AppSettings getSettings() {
@@ -74,59 +76,53 @@ public class Espresso {
                 return scheduler;
             }
         };
+
+        // initialize plugins loader
+        pluginLifecycle.onInitApplication(application);
+
+        // load configured plugins
+        pluginLifecycle.onLoadPlugins(new ViewEnginesCallback());
+        pluginLifecycle.onLoadPlugins(new BodyParserCallback());
+
+        // continue with loading rest of the application
+        return application;
     }
 
     public static IBodyParser json() {
-        IBodyParser parser = BodyParserFactory.parser(APPLICATION_JSON);
-        if (parser == null) {
-            parser = new JsonBodyParser();
-            BodyParserFactory.register(APPLICATION_JSON, parser);
-        }
+        IBodyParser parser = Objects.requireNonNull(BodyParserFactory.parser(APPLICATION_JSON));
+        parser.init(Collections.emptyMap());
         return parser;
     }
 
     public static IBodyParser raw() {
-        IBodyParser parser = BodyParserFactory.parser(APPLICATION_OCTET_STREAM);
-        if (parser == null) {
-            parser = new OctetStreamParser();
-            BodyParserFactory.register(APPLICATION_OCTET_STREAM, parser);
-        }
+        IBodyParser parser = Objects.requireNonNull(BodyParserFactory.parser(APPLICATION_OCTET_STREAM));
+        parser.init(Collections.emptyMap());
         return parser;
     }
 
     public static IBodyParser text() {
-        IBodyParser parser = BodyParserFactory.parser(TEXT_PLAIN);
-        if (parser == null) {
-            parser = new PlainTextBodyParser();
-            BodyParserFactory.register(TEXT_PLAIN, parser);
-        }
+        IBodyParser parser = Objects.requireNonNull(BodyParserFactory.parser(TEXT_PLAIN));
+        parser.init(Collections.emptyMap());
         return parser;
     }
 
     public static IBodyParser urlEncoded() {
-        IBodyParser parser = BodyParserFactory.parser(FORM_URL_ENCODED);
-        if (parser == null) {
-            parser = new FormUrlEncodedParser();
-            BodyParserFactory.register(FORM_URL_ENCODED, parser);
-        }
+        IBodyParser parser = Objects.requireNonNull(BodyParserFactory.parser(FORM_URL_ENCODED));
+        parser.init(Collections.emptyMap());
         return parser;
     }
 
     public static IBodyParser multipart(String location) {
-        IBodyParser parser = BodyParserFactory.parser(MULTIPART_FORM_DATA);
-        if (parser == null) {
-            parser = new MultipartFormDataParser(location);
-            BodyParserFactory.register(MULTIPART_FORM_DATA, parser);
-        }
+        Map<String, Object> params = Map.of("location", location);
+        IBodyParser parser = Objects.requireNonNull(BodyParserFactory.parser(MULTIPART_FORM_DATA));
+        parser.init(params);
         return parser;
     }
 
     public static IBodyParser multipart(String location, long maxFileSize, long maxRequestSize, int fileSizeThreshold) {
-        IBodyParser parser = BodyParserFactory.parser(MULTIPART_FORM_DATA);
-        if (parser == null) {
-            parser = new MultipartFormDataParser(location, maxFileSize, maxRequestSize, fileSizeThreshold);
-            BodyParserFactory.register(MULTIPART_FORM_DATA, parser);
-        }
+        Map<String, Object> params = Map.of("location", location, "maxFileSize", maxFileSize, "maxRequestSize", maxRequestSize, "fileSizeThreshold", fileSizeThreshold);
+        IBodyParser parser = Objects.requireNonNull(BodyParserFactory.parser(MULTIPART_FORM_DATA));
+        parser.init(params);
         return parser;
     }
 
@@ -148,7 +144,7 @@ public class Espresso {
         // extract startup values
         String hostName = props.getOrDefault("host", host);
         int httpPort = props.getOrDefault("port", port, Integer::parseInt);
-        int httpsPort = props.getOrDefault("securePort", 443, Integer::parseInt);
+        int httpsPort = props.getOrDefault("securePort", 3443, Integer::parseInt);
         String certPath = props.getOrDefault("keystorePath", props.cacertsPath());
         String certPass = props.getOrDefault("keystorePass", props.defaultPass());
 

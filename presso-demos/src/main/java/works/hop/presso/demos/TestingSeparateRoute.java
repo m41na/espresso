@@ -1,7 +1,7 @@
 package works.hop.presso.demos;
 
+import works.hop.presso.api.view.IViewEngine;
 import works.hop.presso.jett.Espresso;
-import works.hop.presso.jett.view.MvelViewEngine;
 
 import java.util.Map;
 
@@ -19,8 +19,7 @@ class TestingSeparateRoute {
         route.put("/", (req, res, next) -> res.send("Update the book"));
         // curl -X DELETE http://localhost:3000/book/
         route.delete("/", (req, res, next) -> res.send("Remove the book"));
-
-        app.engine(new MvelViewEngine("presso-demos/templates"), ".mvel");
+        app.engine(IViewEngine.MVEL, "presso-demos/templates", ".mvel");
 
         // curl http://localhost:3000/
         app.get("/", (req, res, next) ->

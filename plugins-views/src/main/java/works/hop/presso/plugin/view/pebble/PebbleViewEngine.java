@@ -1,8 +1,7 @@
-package works.hop.presso.jett.view;
+package works.hop.presso.plugin.view.pebble;
 
 import io.pebbletemplates.pebble.PebbleEngine;
 import io.pebbletemplates.pebble.template.PebbleTemplate;
-import lombok.RequiredArgsConstructor;
 import works.hop.presso.api.application.AppSettings;
 import works.hop.presso.api.view.IViewEngine;
 
@@ -12,15 +11,19 @@ import java.io.Writer;
 import java.nio.file.Path;
 import java.util.Map;
 
-@RequiredArgsConstructor
 public class PebbleViewEngine implements IViewEngine {
 
-    private final String templateDir;
     private final PebbleEngine engine = new PebbleEngine.Builder().build();
+    private String templateDir;
 
     @Override
     public String name() {
         return PEBBLE;
+    }
+
+    @Override
+    public void templateDir(String dirName) {
+        this.templateDir = dirName;
     }
 
     @Override

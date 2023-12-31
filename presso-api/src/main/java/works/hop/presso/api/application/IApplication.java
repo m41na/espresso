@@ -35,6 +35,8 @@ public interface IApplication extends IRouter {
 
     boolean enabled(String setting);
 
+    void engine(String engine, String templateDir, String fileExt);
+
     void engine(IViewEngine engine, String fileExt);
 
     Object get(String setting);

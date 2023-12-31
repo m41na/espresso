@@ -64,4 +64,6 @@ public interface IRequest {
     void setAttr(String name, Object attr);
 
     byte[] readSync() throws IOException;
+
+    <R> R rawRequest(Class<R> type); //The escape chute to native Request object
 }

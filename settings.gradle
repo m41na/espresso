@@ -7,3 +7,6 @@ include 'presso-game'
 include 'presso-jetty'
 include 'presso-json'
 include 'presso-mkdn'
+include 'plugins-views'
+include 'plugins-content'
+
