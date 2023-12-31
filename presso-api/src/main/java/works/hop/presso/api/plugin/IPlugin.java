@@ -4,25 +4,25 @@ import java.util.ServiceLoader;
 
 public interface IPlugin<T> {
 
-    void identifier(String value);
+    void id(String value);
 
-    String identifier();
+    String id();
 
-    ServiceLoader<T> component();
+    ServiceLoader<T> loader();
 
-    void component(ServiceLoader<T> loader);
+    void loader(ServiceLoader<T> loader);
 
     T find(String identifier);
 
     default void load(Class<T> type) {
-        component(ServiceLoader.load(type));
+        loader(ServiceLoader.load(type));
     }
 
     default void load(Class<T> type, ClassLoader parentCl) {
-        component(ServiceLoader.load(type, parentCl));
+        loader(ServiceLoader.load(type, parentCl));
     }
 
     default void reload() {
-        component().reload();
+        loader().reload();
     }
 }

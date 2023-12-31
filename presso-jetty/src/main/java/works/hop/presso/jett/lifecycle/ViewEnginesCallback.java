@@ -21,6 +21,6 @@ public class ViewEnginesCallback implements IPluginCallback<ViewEngineFactory> {
 
     public void loadPlugins(ViewEngineFactory factory) {
         this.plugins = new ViewEnginePlugins(ServiceLoader.load(IViewEngine.class));
-        this.plugins.component().forEach(engine -> ViewEngineFactory.register(engine.name(), engine));
+        this.plugins.loader().forEach(engine -> ViewEngineFactory.register(engine.name(), engine));
     }
 }

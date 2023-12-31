@@ -23,6 +23,6 @@ public class BodyParserCallback implements IPluginCallback<BodyParserFactory> {
     public void loadPlugins(BodyParserFactory factory) {
         log.info("Start loading plugins");
         this.plugins = new BodyParserPlugins(ServiceLoader.load(IBodyParser.class));
-        this.plugins.component().forEach(parser -> BodyParserFactory.register(parser.contentType(), parser));
+        this.plugins.loader().forEach(parser -> BodyParserFactory.register(parser.contentType(), parser));
     }
 }

@@ -20,22 +20,22 @@ public class BodyParserPlugins implements IBodyParserPlugin {
     }
 
     @Override
-    public ServiceLoader<IBodyParser> component() {
+    public ServiceLoader<IBodyParser> loader() {
         return this.loader;
     }
 
     @Override
-    public void component(ServiceLoader<IBodyParser> loader) {
+    public void loader(ServiceLoader<IBodyParser> loader) {
         this.loader = loader;
     }
 
     @Override
-    public void identifier(String value) {
+    public void id(String value) {
         this.contentType = value;
     }
 
     @Override
-    public String identifier() {
+    public String id() {
         return this.contentType;
     }
 
@@ -46,7 +46,7 @@ public class BodyParserPlugins implements IBodyParserPlugin {
 
     @Override
     public String contentType() {
-        return this.identifier();
+        return this.id();
     }
 
     @Override

@@ -6,7 +6,7 @@ public interface IViewEnginePlugin extends IViewEngine, IPlugin<IViewEngine> {
 
     @Override
     default IViewEngine find(String identifier) {
-        for (IViewEngine plugin : component()) {
+        for (IViewEngine plugin : loader()) {
             if (plugin.name().equals(identifier)) {
                 return plugin;
             }

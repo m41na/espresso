@@ -18,28 +18,28 @@ public class ViewEnginePlugins implements IViewEnginePlugin {
     }
 
     @Override
-    public ServiceLoader<IViewEngine> component() {
+    public ServiceLoader<IViewEngine> loader() {
         return this.loader;
     }
 
     @Override
-    public void component(ServiceLoader<IViewEngine> loader) {
+    public void loader(ServiceLoader<IViewEngine> loader) {
         this.loader = loader;
     }
 
     @Override
-    public void identifier(String value) {
+    public void id(String value) {
         this.viewEngine = value;
     }
 
     @Override
-    public String identifier() {
+    public String id() {
         return this.viewEngine;
     }
 
     @Override
     public String name() {
-        return this.identifier();
+        return this.id();
     }
 
     @Override

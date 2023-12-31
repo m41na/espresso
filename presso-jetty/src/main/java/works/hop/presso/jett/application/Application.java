@@ -126,7 +126,6 @@ public class Application extends Router implements IApplication, Cloneable {
         this.set(AppSettings.Setting.TEMPLATES_DIR.property, engine.templateDir());
         this.set(AppSettings.Setting.VIEW_ENGINE.property, engine.name());
         this.set(AppSettings.Setting.TEMPLATES_EXT.property, fileExt);
-//        ViewEngineFactory.register(engine.name(), engine);
     }
 
     @Override
