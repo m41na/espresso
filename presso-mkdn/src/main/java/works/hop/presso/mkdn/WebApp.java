@@ -33,7 +33,7 @@ public class WebApp {
         String baseDir = props.getOrDefault("h", "U:\\11ty-site\\public");
         String pagesDir = props.getOrDefault("p", "posts");
         String welcomeFile = props.getOrDefault("w", "index.html");
-        int httpPort = props.getOrDefault("port", 9080, Integer::parseInt);
+        int httpPort = props.getOrDefault("port", Integer::parseInt, 9080);
         String hostName = props.getOrDefault("host", "localhost");
 
         IApplication app = Espresso.express();

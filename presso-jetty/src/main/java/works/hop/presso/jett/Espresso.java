@@ -9,6 +9,7 @@ import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import works.hop.presso.api.application.AppSettings;
 import works.hop.presso.api.application.IApplication;
+import works.hop.presso.api.application.StartupEnv;
 import works.hop.presso.api.content.IBodyParser;
 import works.hop.presso.api.plugin.IPluginLifecycle;
 import works.hop.presso.api.servable.IStaticOptions;
@@ -33,7 +34,6 @@ import static works.hop.presso.api.content.IContentType.*;
 
 public class Espresso {
 
-    public static final String SERVER_NAME = "kahawa-press";
     public static final String DEFAULT_CTX = "/";
     public static final String PATH_SEGMENT = "(\\b.+?)(/)|(\\b.+$)";
     private static final ConfigMap configMap = new ConfigMap();
@@ -113,14 +113,15 @@ public class Espresso {
     }
 
     public static IBodyParser multipart(String location) {
-        Map<String, Object> params = Map.of("location", location);
-        IBodyParser parser = Objects.requireNonNull(BodyParserFactory.parser(MULTIPART_FORM_DATA));
-        parser.init(params);
-        return parser;
+        String multipartLocation = location != null ? location : (String) StartupEnv.MULTIPART_LOCATION.value;
+        long maxFileSize = (long) StartupEnv.MULTIPART_MAX_FILE_SIZE.value;
+        long maxRequestSize = (long) StartupEnv.MULTIPART_MAX_REQ_SIZE.value;
+        int fileSizeThreshold = (int) StartupEnv.MULTIPART_FILE_THRESHOLD.value;
+        return multipart(multipartLocation, maxFileSize, maxRequestSize, fileSizeThreshold);
     }
 
     public static IBodyParser multipart(String location, long maxFileSize, long maxRequestSize, int fileSizeThreshold) {
-        Map<String, Object> params = Map.of("location", location, "maxFileSize", maxFileSize, "maxRequestSize", maxRequestSize, "fileSizeThreshold", fileSizeThreshold);
+        Map<String, Object> params = Map.of(StartupEnv.MULTIPART_LOCATION.property, location, StartupEnv.MULTIPART_MAX_FILE_SIZE.property, maxFileSize, StartupEnv.MULTIPART_MAX_REQ_SIZE.property, maxRequestSize, StartupEnv.MULTIPART_FILE_THRESHOLD.property, fileSizeThreshold);
         IBodyParser parser = Objects.requireNonNull(BodyParserFactory.parser(MULTIPART_FORM_DATA));
         parser.init(params);
         return parser;
@@ -142,23 +143,23 @@ public class Espresso {
         StartUp props = StartUp.instance();
 
         // extract startup values
-        String hostName = props.getOrDefault("host", host);
-        int httpPort = props.getOrDefault("port", port, Integer::parseInt);
-        int httpsPort = props.getOrDefault("securePort", 3443, Integer::parseInt);
-        String certPath = props.getOrDefault("keystorePath", props.cacertsPath());
-        String certPass = props.getOrDefault("keystorePass", props.defaultPass());
+        String hostName = props.getOrDefault(StartupEnv.SERVER_HOST.property, host);
+        int httpPort = props.getOrDefault(StartupEnv.SERVER_PORT.property, Integer::parseInt, port);
+        int httpsPort = props.getOrDefault(StartupEnv.SERVER_SECURE_PORT.property, Integer::parseInt, (int) StartupEnv.SERVER_SECURE_PORT.value);
+        String certPath = props.getOrDefault(StartupEnv.KEYSTORE_PATH.property, props.cacertsPath());
+        String certPass = props.getOrDefault(StartupEnv.KEYSTORE_PASS.property, props.defaultPass());
 
         //create thread-pool
         QueuedThreadPool threadPool = new QueuedThreadPool();
-        threadPool.setName(SERVER_NAME);
+        threadPool.setName(StartupEnv.SERVER_NAME.value.toString());
         Server server = new Server(threadPool);
         Runtime.getRuntime().addShutdownHook(new Thread(scheduler::shutdown));
-        // apply the connectors
-        server.setConnectors(new Connector[]{
-                createHttpConnector(hostName, httpPort, httpsPort, server, entryApp),
-                createHttpsConnector(httpsPort, certPath, certPass, server)
-        });
 
+        // apply the connectors
+        try (ServerConnector httpConnector = createHttpConnector(hostName, httpPort, httpsPort, server, entryApp);
+             ServerConnector httpsConnector = createHttpsConnector(httpsPort, certPath, certPass, server)) {
+            server.setConnectors(new Connector[]{httpConnector, httpsConnector});
+        }
         return server;
     }
 
@@ -211,7 +212,7 @@ public class Espresso {
         HttpConfiguration httpConfig = new HttpConfiguration();
         httpConfig.setSendServerVersion(false);
         httpConfig.setSecurePort(httpsPort);
-        httpConfig.setSecureScheme("https");
+        httpConfig.setSecureScheme(StartupEnv.SECURE_PROTOCOL.property);
         httpConfig.setHttpCompliance(HttpCompliance.RFC7230);
         return httpConfig;
     }
@@ -247,7 +248,7 @@ public class Espresso {
             }
 
             // if using secure protocol, rewrite url to https
-            Boolean redirectSecure = StartUp.instance().getOrDefault("redirectSecure", false, Boolean::parseBoolean);
+            Boolean redirectSecure = StartUp.instance().getOrDefault(StartupEnv.REDIRECT_SECURE.property, Boolean::parseBoolean, (boolean) StartupEnv.REDIRECT_SECURE.value);
             if (redirectSecure) {
                 handlerList.addHandler(new SecuredRedirectHandler());
             }

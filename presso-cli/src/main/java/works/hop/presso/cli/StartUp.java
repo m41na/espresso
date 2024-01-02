@@ -82,14 +82,14 @@ public class StartUp {
     }
 
     public <T> T getOptionValue(String key, Function<String, T> converter) {
-        return this.getOrDefault(key, null, converter);
+        return this.getOrDefault(key, converter, null);
     }
 
     public String getOrDefault(String key, String defaultValue) {
         return this.getArgs().getOptionValue(key, defaultValue);
     }
 
-    public <T> T getOrDefault(String key, T defaultValue, Function<String, T> converter) {
+    public <T> T getOrDefault(String key, Function<String, T> converter, T defaultValue) {
         return Optional.ofNullable(this.getOptionValue(key)).map(converter).orElse(defaultValue);
     }
 

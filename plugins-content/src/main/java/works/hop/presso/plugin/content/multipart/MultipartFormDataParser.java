@@ -3,9 +3,9 @@ package works.hop.presso.plugin.content.multipart;
 import jakarta.servlet.MultipartConfigElement;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Part;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jetty.server.Request;
+import works.hop.presso.api.application.StartupEnv;
 import works.hop.presso.api.content.IBodyParser;
 import works.hop.presso.api.request.IRequest;
 
@@ -18,20 +18,20 @@ import static works.hop.presso.api.content.IContentType.MULTIPART_FORM_DATA;
 
 @Slf4j
 public class MultipartFormDataParser implements IBodyParser {
-    @Setter
     String location = System.getProperty("java.io.tmpdir");
-    @Setter
-    long maxFileSize = 10_000_000;
-    @Setter
-    long maxRequestSize = 10_000_000;
-    @Setter
-    int fileSizeThreshold = 10_000_000;
+    long maxFileSize = 1_000_000L;
+    long maxRequestSize = 10_000_000L;
+    int fileSizeThreshold = 0;
     private MultipartConfigElement multiPartConfig;
 
     @Override
     public void init(Map<String, Object> params) {
         log.info("Initializing {}".getClass().getName());
-        this.multiPartConfig = new MultipartConfigElement(location, maxFileSize, maxRequestSize, fileSizeThreshold);
+        this.multiPartConfig = new MultipartConfigElement(
+                (String) params.getOrDefault(StartupEnv.MULTIPART_LOCATION.property, location),
+                (Long) params.getOrDefault(StartupEnv.MULTIPART_MAX_FILE_SIZE.property, maxFileSize),
+                (Long) params.getOrDefault(StartupEnv.MULTIPART_MAX_REQ_SIZE.property, maxRequestSize),
+                (int) params.getOrDefault(StartupEnv.MULTIPART_FILE_THRESHOLD.property, fileSizeThreshold));
     }
 
     @Override
