@@ -17,6 +17,10 @@ public class OptBuilder {
         this.add("deployEnv", true, "deployment environment (dev, prod, test, int, stage)", false);
         this.add("port", true, "listening port");
         this.add("host", true, "application host");
+        this.add("pluginsHome", true, "plugins home directory", false);
+        this.add("viewPlugins", true, "view engine plugins sub-directory", false);
+        this.add("contentPlugins", true, "body parser plugins sub-directory", false);
+        this.add("routerPlugins", true, "router handler plugins sub-directory", false);
     }
 
     public static OptBuilder newBuilder() {

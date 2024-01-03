@@ -12,6 +12,7 @@ import works.hop.presso.api.application.IApplication;
 import works.hop.presso.api.application.StartupEnv;
 import works.hop.presso.api.content.IBodyParser;
 import works.hop.presso.api.plugin.IPluginLifecycle;
+import works.hop.presso.api.plugin.PluginsDir;
 import works.hop.presso.api.servable.IStaticOptions;
 import works.hop.presso.cli.StartUp;
 import works.hop.presso.jett.application.Application;
@@ -23,6 +24,8 @@ import works.hop.presso.jett.lifecycle.BodyParserCallback;
 import works.hop.presso.jett.lifecycle.PluginLifecycle;
 import works.hop.presso.jett.lifecycle.RouterHandleCallback;
 import works.hop.presso.jett.lifecycle.ViewEnginesCallback;
+import works.hop.presso.jett.plugin.DirLayout;
+import works.hop.presso.jett.plugin.PluginsDirectory;
 import works.hop.presso.jett.servable.StaticOptionsBuilder;
 
 import java.util.*;
@@ -80,6 +83,11 @@ public class Espresso {
 
         // initialize plugins loader
         pluginLifecycle.onInitApplication(application);
+
+        //load plugins from given directory, if specified
+        if (DirLayout.PLUGINS.containsKey(PluginsDir.PLUGINS_HOME_DIR)) {
+            pluginLifecycle.onLoadPlugins(new PluginsDirectory());
+        }
 
         // load configured plugins
         pluginLifecycle.onLoadPlugins(new ViewEnginesCallback());
