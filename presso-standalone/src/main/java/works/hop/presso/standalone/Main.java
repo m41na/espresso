@@ -12,7 +12,7 @@ import works.hop.presso.jett.plugin.DirLayout;
 import java.util.List;
 
 @Slf4j
-public class StandaloneApp {
+public class Main {
 
     public static void main(String[] args) {
         final OptBuilder options = OptBuilder.newBuilder();

@@ -39,7 +39,7 @@ test {
 
 application {
     // Define the main class for the application.
-    mainClass = 'works.hop.presso.demos.MethodHandlers'
+    mainClass = 'works.hop.presso.standalone.Main'
 }
 
 jar {
