@@ -1,6 +1,5 @@
 rootProject.name = 'espresso'
 include 'presso-api'
-include 'presso-boot'
 include 'presso-cli'
 include 'presso-demos'
 include 'presso-game'
