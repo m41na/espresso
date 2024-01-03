@@ -9,4 +9,5 @@ include 'presso-json'
 include 'presso-mkdn'
 include 'plugins-views'
 include 'plugins-content'
+include 'plugins-routable'
 

@@ -21,6 +21,7 @@ import works.hop.presso.jett.content.BodyParserFactory;
 import works.hop.presso.jett.handler.RouteHandler;
 import works.hop.presso.jett.lifecycle.BodyParserCallback;
 import works.hop.presso.jett.lifecycle.PluginLifecycle;
+import works.hop.presso.jett.lifecycle.RouterHandleCallback;
 import works.hop.presso.jett.lifecycle.ViewEnginesCallback;
 import works.hop.presso.jett.servable.StaticOptionsBuilder;
 
@@ -83,6 +84,7 @@ public class Espresso {
         // load configured plugins
         pluginLifecycle.onLoadPlugins(new ViewEnginesCallback());
         pluginLifecycle.onLoadPlugins(new BodyParserCallback());
+        pluginLifecycle.onLoadPlugins(new RouterHandleCallback());
 
         // continue with loading rest of the application
         return application;
@@ -148,6 +150,7 @@ public class Espresso {
         int httpsPort = props.getOrDefault(StartupEnv.SERVER_SECURE_PORT.property, Integer::parseInt, (int) StartupEnv.SERVER_SECURE_PORT.value);
         String certPath = props.getOrDefault(StartupEnv.KEYSTORE_PATH.property, props.cacertsPath());
         String certPass = props.getOrDefault(StartupEnv.KEYSTORE_PASS.property, props.defaultPass());
+        String deployEnv = props.getOrDefault(StartupEnv.DEPLOY_ENVIRONMENT.property, (String) StartupEnv.DEPLOY_ENVIRONMENT.value);
 
         //create thread-pool
         QueuedThreadPool threadPool = new QueuedThreadPool();
@@ -157,7 +160,7 @@ public class Espresso {
 
         // apply the connectors
         try (ServerConnector httpConnector = createHttpConnector(hostName, httpPort, httpsPort, server, entryApp);
-             ServerConnector httpsConnector = createHttpsConnector(httpsPort, certPath, certPass, server)) {
+             ServerConnector httpsConnector = createHttpsConnector(httpsPort, certPath, certPass, deployEnv, server)) {
             server.setConnectors(new Connector[]{httpConnector, httpsConnector});
         }
         return server;
@@ -183,10 +186,10 @@ public class Espresso {
         return httpConnector;
     }
 
-    private static ServerConnector createHttpsConnector(int httpsPort, String certPath, String certPass, Server server) {
+    private static ServerConnector createHttpsConnector(int httpsPort, String certPath, String certPass, String env, Server server) {
         // The HTTP configuration object.
         HttpConfiguration httpConfig = createHttpConfiguration(httpsPort);
-        httpConfig.addCustomizer(createSecureRequestCustomizer());
+        httpConfig.addCustomizer(createSecureRequestCustomizer(env));
 
         // HTTP/1.1:
         HttpConnectionFactory http11 = new HttpConnectionFactory(httpConfig);
@@ -217,10 +220,10 @@ public class Espresso {
         return httpConfig;
     }
 
-    private static SecureRequestCustomizer createSecureRequestCustomizer() {
+    private static SecureRequestCustomizer createSecureRequestCustomizer(String deployEnv) {
         SecureRequestCustomizer src = new SecureRequestCustomizer();
         // customize for additional configuration
-        src.setSniHostCheck(false); //NOTE: Only for testing. For PROD, do not set to false
+        src.setSniHostCheck(deployEnv.equals(StartupEnv.PROD_ENVIRONMENT.property)); //NOTE: Only for testing. For PROD, do not set to false
         return src;
     }
 

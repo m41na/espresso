@@ -3,6 +3,12 @@ package works.hop.presso.api.application;
 public enum StartupEnv {
 
     SERVER_NAME("serverName", "server name", "jinsi-press"),
+    DEPLOY_ENVIRONMENT("deployEnv", "deployment environment", "development"),
+    DEV_ENVIRONMENT("development", "production deployment environment", "production"),
+    TEST_ENVIRONMENT("test", "test deployment environment", "test"),
+    INT_ENVIRONMENT("integration", "integration deployment environment", "integration"),
+    STAGE_ENVIRONMENT("staging", "staging deployment environment", "staging"),
+    PROD_ENVIRONMENT("production", "production deployment environment", "production"),
     MULTIPART_LOCATION("location", "upload folder for multipart requests. Default is java's temp directory", System.getProperty("java.io.tmpdir")),
     MULTIPART_MAX_FILE_SIZE("maxFileSize", "maximum size permitted for uploaded file. Default is 1BM", 1_000_000L),
     MULTIPART_MAX_REQ_SIZE("maxRequestSize", "maximum size allowed for multipart/form-data request. Default is 10M", 10_000_000L),

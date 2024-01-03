@@ -14,6 +14,7 @@ public class OptBuilder {
         this.add("keystorePath", true, "path to key store", false);
         this.add("securePort", true, "secure listening port", false);
         this.add("redirectSecure", true, "redirect from http to https", false);
+        this.add("deployEnv", true, "deployment environment (dev, prod, test, int, stage)", false);
         this.add("port", true, "listening port");
         this.add("host", true, "application host");
     }
@@ -34,7 +35,7 @@ public class OptBuilder {
 
     public OptBuilder add(String opt, boolean hasArgs, String description, boolean required) {
         if (required) {
-            this.options.addOption(new Option(opt, hasArgs, description));
+            this.options.addRequiredOption(opt, opt, hasArgs, description);
             return this;
         }
         return this.add(opt, hasArgs, description);

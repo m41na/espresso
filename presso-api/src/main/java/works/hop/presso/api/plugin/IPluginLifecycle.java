@@ -6,7 +6,7 @@ public interface IPluginLifecycle {
 
     void onInitApplication(IApplication application);
 
-    void onLoadPlugins(IPluginCallback<?> callback);
+    void onLoadPlugins(IPluginCallback callback);
 
     void onReloadPlugins();
 }

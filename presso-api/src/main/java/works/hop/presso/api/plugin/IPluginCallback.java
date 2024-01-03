@@ -1,24 +1,26 @@
 package works.hop.presso.api.plugin;
 
-public interface IPluginCallback<T> {
+import works.hop.presso.api.application.IApplication;
+
+public interface IPluginCallback {
 
     String LOAD_PLUGINS = "LOAD_PLUGINS";
     String RELOAD_PLUGINS = "RELOAD_PLUGINS";
 
-    default void onEvent(String event, T factory) {
+    default void onEvent(String event, IApplication app) {
         switch (event) {
             case LOAD_PLUGINS:
-                loadPlugins(factory);
+                loadPlugins(app);
                 break;
             case RELOAD_PLUGINS:
-                reloadPlugins(factory);
+                reloadPlugins(app);
                 break;
             default:
                 throw new RuntimeException(String.format("%s event is unknown", event));
         }
     }
 
-    void reloadPlugins(T factory);
+    void reloadPlugins(IApplication app);
 
-    void loadPlugins(T factory);
+    void loadPlugins(IApplication app);
 }

@@ -17,6 +17,7 @@ dependencies {
     // plugins
     implementation project(':plugins-views')
     implementation project(':plugins-content')
+    implementation project(':plugins-routable')
 
     // websockets
     implementation 'org.eclipse.jetty.websocket:websocket-jetty-api:11.0.16'
