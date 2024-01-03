@@ -12,19 +12,19 @@ import works.hop.presso.api.application.IApplication;
 import works.hop.presso.api.application.StartupEnv;
 import works.hop.presso.api.content.IBodyParser;
 import works.hop.presso.api.plugin.IPluginLifecycle;
-import works.hop.presso.api.plugin.PluginsDir;
+import works.hop.presso.api.plugin.DirectoryInfo;
 import works.hop.presso.api.servable.IStaticOptions;
 import works.hop.presso.cli.StartUp;
 import works.hop.presso.jett.application.Application;
 import works.hop.presso.jett.application.PathUtils;
 import works.hop.presso.jett.config.ConfigMap;
-import works.hop.presso.jett.content.BodyParserFactory;
+import works.hop.presso.jett.content.BodyParsersCache;
 import works.hop.presso.jett.handler.RouteHandler;
 import works.hop.presso.jett.lifecycle.BodyParserCallback;
 import works.hop.presso.jett.lifecycle.PluginLifecycle;
 import works.hop.presso.jett.lifecycle.RouterHandleCallback;
 import works.hop.presso.jett.lifecycle.ViewEnginesCallback;
-import works.hop.presso.jett.plugin.DirLayout;
+import works.hop.presso.api.plugin.Directories;
 import works.hop.presso.jett.plugin.PluginsDirectory;
 import works.hop.presso.jett.servable.StaticOptionsBuilder;
 
@@ -85,7 +85,7 @@ public class Espresso {
         pluginLifecycle.onInitApplication(application);
 
         //load plugins from given directory, if specified
-        if (DirLayout.PLUGINS.containsKey(PluginsDir.PLUGINS_HOME_DIR)) {
+        if (Directories.PLUGINS.containsKey(DirectoryInfo.PLUGINS_HOME)) {
             pluginLifecycle.onLoadPlugins(new PluginsDirectory());
         }
 
@@ -99,25 +99,25 @@ public class Espresso {
     }
 
     public static IBodyParser json() {
-        IBodyParser parser = Objects.requireNonNull(BodyParserFactory.parser(APPLICATION_JSON));
+        IBodyParser parser = Objects.requireNonNull(BodyParsersCache.parser(APPLICATION_JSON));
         parser.init(Collections.emptyMap());
         return parser;
     }
 
     public static IBodyParser raw() {
-        IBodyParser parser = Objects.requireNonNull(BodyParserFactory.parser(APPLICATION_OCTET_STREAM));
+        IBodyParser parser = Objects.requireNonNull(BodyParsersCache.parser(APPLICATION_OCTET_STREAM));
         parser.init(Collections.emptyMap());
         return parser;
     }
 
     public static IBodyParser text() {
-        IBodyParser parser = Objects.requireNonNull(BodyParserFactory.parser(TEXT_PLAIN));
+        IBodyParser parser = Objects.requireNonNull(BodyParsersCache.parser(TEXT_PLAIN));
         parser.init(Collections.emptyMap());
         return parser;
     }
 
     public static IBodyParser urlEncoded() {
-        IBodyParser parser = Objects.requireNonNull(BodyParserFactory.parser(FORM_URL_ENCODED));
+        IBodyParser parser = Objects.requireNonNull(BodyParsersCache.parser(FORM_URL_ENCODED));
         parser.init(Collections.emptyMap());
         return parser;
     }
@@ -132,7 +132,7 @@ public class Espresso {
 
     public static IBodyParser multipart(String location, long maxFileSize, long maxRequestSize, int fileSizeThreshold) {
         Map<String, Object> params = Map.of(StartupEnv.MULTIPART_LOCATION.property, location, StartupEnv.MULTIPART_MAX_FILE_SIZE.property, maxFileSize, StartupEnv.MULTIPART_MAX_REQ_SIZE.property, maxRequestSize, StartupEnv.MULTIPART_FILE_THRESHOLD.property, fileSizeThreshold);
-        IBodyParser parser = Objects.requireNonNull(BodyParserFactory.parser(MULTIPART_FORM_DATA));
+        IBodyParser parser = Objects.requireNonNull(BodyParsersCache.parser(MULTIPART_FORM_DATA));
         parser.init(params);
         return parser;
     }

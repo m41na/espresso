@@ -2,16 +2,20 @@ package works.hop.presso.jett.view;
 
 import works.hop.presso.api.view.IViewEngine;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class ViewEngineFactory {
+public class ViewEnginesCache {
 
-    private static final Map<String, IViewEngine> factories = new HashMap<>();
+    private static final Map<String, IViewEngine> engines = new LinkedHashMap<>();
+
+    private ViewEnginesCache() {
+        //hide constructor
+    }
 
     public static IViewEngine engine(String name, String templateDir) {
-        if (factories.containsKey(name)) {
-            IViewEngine viewEngine = factories.get(name);
+        if (engines.containsKey(name)) {
+            IViewEngine viewEngine = engines.get(name);
             viewEngine.templateDir(templateDir);
             return viewEngine;
         }
@@ -20,6 +24,10 @@ public class ViewEngineFactory {
     }
 
     public static void register(String name, IViewEngine viewEngine) {
-        factories.putIfAbsent(name, viewEngine);
+        engines.putIfAbsent(name, viewEngine);
+    }
+
+    public static void deregister() {
+        engines.clear();
     }
 }

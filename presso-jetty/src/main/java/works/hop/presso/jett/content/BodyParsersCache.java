@@ -5,16 +5,12 @@ import works.hop.presso.api.content.IBodyParser;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class BodyParserFactory {
+public class BodyParsersCache {
 
-    public static Map<String, IBodyParser> parsers = new LinkedHashMap<>();
+    private static final Map<String, IBodyParser> parsers = new LinkedHashMap<>();
 
-    private BodyParserFactory() {
+    private BodyParsersCache() {
         //hide constructor
-    }
-
-    public static void register(String contentType, IBodyParser parser) {
-        parsers.putIfAbsent(contentType, parser);
     }
 
     public static IBodyParser parser(String contentType) {
@@ -22,5 +18,13 @@ public class BodyParserFactory {
             return parsers.get(contentType);
         }
         throw new NullPointerException(String.format("There is no content parser configured for the type %s", contentType));
+    }
+
+    public static void register(String contentType, IBodyParser parser) {
+        parsers.putIfAbsent(contentType, parser);
+    }
+
+    public static void deregister() {
+        parsers.clear();
     }
 }

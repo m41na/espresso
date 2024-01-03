@@ -32,7 +32,7 @@ public class CorsHandler extends HandlerWrapper {
         response.addHeader(CorsOptions.Option.ACCESS_CONTROL_ALLOW_ORIGIN_HEADER.name, CorsOptions.Option.ACCESS_CONTROL_ALLOW_ORIGIN_HEADER.defaultValue);
 
         if (isPreflightRequest(request)) {
-            //TODO: This is VERY hastily put together. Needs a lot more reasoning through. Temporary solution for now
+            //TODO: This is VERY hastily put together. Needs a lot more reasoning about scenarios. This is a temporary solution for now
             response.addHeader(CorsOptions.Option.ACCESS_CONTROL_MAX_AGE_HEADER.name, CorsOptions.Option.ACCESS_CONTROL_MAX_AGE_HEADER.defaultValue);
             response.addHeader(CorsOptions.Option.ACCESS_CONTROL_ALLOW_METHODS_HEADER.name, CorsOptions.Option.ACCESS_CONTROL_ALLOW_METHODS_HEADER.defaultValue);
             response.addHeader(CorsOptions.Option.ACCESS_CONTROL_ALLOW_CREDENTIALS_HEADER.name, CorsOptions.Option.ACCESS_CONTROL_ALLOW_CREDENTIALS_HEADER.defaultValue);

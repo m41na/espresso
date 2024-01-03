@@ -1,15 +1,16 @@
 package works.hop.presso.jett.plugin;
 
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import works.hop.presso.api.application.IApplication;
 import works.hop.presso.api.content.IBodyParser;
 import works.hop.presso.api.plugin.*;
 import works.hop.presso.api.router.IRouter;
 import works.hop.presso.api.view.IViewEngine;
-import works.hop.presso.jett.content.BodyParserFactory;
+import works.hop.presso.jett.content.BodyParsersCache;
 import works.hop.presso.jett.content.BodyParserPlugins;
 import works.hop.presso.jett.router.RouterHandlePlugins;
-import works.hop.presso.jett.view.ViewEngineFactory;
+import works.hop.presso.jett.view.ViewEnginesCache;
 import works.hop.presso.jett.view.ViewEnginePlugins;
 
 import java.io.File;
@@ -22,25 +23,25 @@ import java.util.Optional;
 import java.util.ServiceLoader;
 
 @Setter
+@Slf4j
 public class PluginsDirectory implements IPluginCallback {
 
     @Override
     public void reloadPlugins(IApplication app) {
-        loadPlugins(app);
-        //TODO: figure out how to refresh static cache inside Factory class
+        log.warn("The 'reloadPlugins' action will require a restart since it involves reloading router handle plugins");
     }
 
     @Override
     public void loadPlugins(IApplication app) {
-        for (PluginsDir layout : DirLayout.PLUGINS.keySet()) {
+        for (DirectoryInfo layout : Directories.PLUGINS.keySet()) {
             switch (layout) {
-                case ROUTER_HANDLE_PLUGINS -> {
+                case ROUTER_HANDLES -> {
                     loadRouterHandlePlugins(app);
                 }
-                case BODY_PARSER_PLUGINS -> {
+                case BODY_PARSERS -> {
                     loadBodyParserPlugins();
                 }
-                case VIEW_ENGINE_PLUGINS -> {
+                case VIEW_ENGINES -> {
                     loadViewEnginePlugins();
                 }
             }
@@ -48,25 +49,25 @@ public class PluginsDirectory implements IPluginCallback {
     }
 
     private void loadViewEnginePlugins() {
-        String pluginDir = Path.of(DirLayout.PLUGINS.get(PluginsDir.PLUGINS_HOME_DIR), DirLayout.PLUGINS.get(PluginsDir.VIEW_ENGINE_PLUGINS)).toString();
+        String pluginDir = Path.of(Directories.PLUGINS.get(DirectoryInfo.PLUGINS_HOME), Directories.PLUGINS.get(DirectoryInfo.VIEW_ENGINES)).toString();
         Optional.ofNullable(pluginsClassLoader(pluginDir)).ifPresent((URLClassLoader ucl) -> {
             IViewEnginePlugin viewPlugins = new ViewEnginePlugins(ServiceLoader.load(IViewEngine.class, ucl));
 
-            viewPlugins.loader().forEach(engine -> ViewEngineFactory.register(engine.name(), engine));
+            viewPlugins.loader().forEach(engine -> ViewEnginesCache.register(engine.name(), engine));
         });
     }
 
     private void loadBodyParserPlugins() {
-        String pluginDir = Path.of(DirLayout.PLUGINS.get(PluginsDir.PLUGINS_HOME_DIR), DirLayout.PLUGINS.get(PluginsDir.BODY_PARSER_PLUGINS)).toString();
+        String pluginDir = Path.of(Directories.PLUGINS.get(DirectoryInfo.PLUGINS_HOME), Directories.PLUGINS.get(DirectoryInfo.BODY_PARSERS)).toString();
         Optional.ofNullable(pluginsClassLoader(pluginDir)).ifPresent((URLClassLoader ucl) -> {
             IBodyParserPlugin contentPlugins = new BodyParserPlugins(ServiceLoader.load(IBodyParser.class, ucl));
 
-            contentPlugins.loader().forEach(parser -> BodyParserFactory.register(parser.contentType(), parser));
+            contentPlugins.loader().forEach(parser -> BodyParsersCache.register(parser.contentType(), parser));
         });
     }
 
     private void loadRouterHandlePlugins(IApplication app) {
-        String pluginDir = Path.of(DirLayout.PLUGINS.get(PluginsDir.PLUGINS_HOME_DIR), DirLayout.PLUGINS.get(PluginsDir.ROUTER_HANDLE_PLUGINS)).toString();
+        String pluginDir = Path.of(Directories.PLUGINS.get(DirectoryInfo.PLUGINS_HOME), Directories.PLUGINS.get(DirectoryInfo.ROUTER_HANDLES)).toString();
         Optional.ofNullable(pluginsClassLoader(pluginDir)).ifPresent((URLClassLoader ucl) -> {
             IRouterHandlePlugin routerPlugins = new RouterHandlePlugins(ServiceLoader.load(IRouterHandle.class, ucl));
 

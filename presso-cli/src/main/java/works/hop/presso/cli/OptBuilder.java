@@ -18,9 +18,9 @@ public class OptBuilder {
         this.add("port", true, "listening port");
         this.add("host", true, "application host");
         this.add("pluginsHome", true, "plugins home directory", false);
-        this.add("viewPlugins", true, "view engine plugins sub-directory", false);
-        this.add("contentPlugins", true, "body parser plugins sub-directory", false);
-        this.add("routerPlugins", true, "router handler plugins sub-directory", false);
+        this.add("viewEngines", true, "view engine plugins sub-directory", false);
+        this.add("bodyParsers", true, "body parser plugins sub-directory", false);
+        this.add("routerHandlers", true, "router handler plugins sub-directory", false);
     }
 
     public static OptBuilder newBuilder() {

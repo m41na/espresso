@@ -9,7 +9,7 @@ import works.hop.presso.api.application.IApplication;
 import works.hop.presso.api.content.IBodyParser;
 import works.hop.presso.api.request.IRequest;
 import works.hop.presso.api.request.ReqCookies;
-import works.hop.presso.jett.content.BodyParserFactory;
+import works.hop.presso.jett.content.BodyParsersCache;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -44,7 +44,7 @@ public class Req implements IRequest {
     public <T> T body(Function<byte[], T> converter) {
         try {
             if (this.body == null) {
-                IBodyParser parser = BodyParserFactory.parser(request.getContentType());
+                IBodyParser parser = BodyParsersCache.parser(request.getContentType());
                 byte[] bytes = (byte[]) parser.read(this);
                 return converter.apply(bytes);
             }
@@ -58,7 +58,7 @@ public class Req implements IRequest {
     public Map<String, Object> body() {
         try {
             if (this.body == null) {
-                IBodyParser parser = BodyParserFactory.parser(request.getContentType());
+                IBodyParser parser = BodyParsersCache.parser(request.getContentType());
                 this.body = parser.read(this, Map.class);
             }
             return this.body;
@@ -70,7 +70,7 @@ public class Req implements IRequest {
     @Override
     public void upload() {
         try {
-            IBodyParser parser = BodyParserFactory.parser(request.getContentType());
+            IBodyParser parser = BodyParsersCache.parser(request.getContentType());
             parser.read(this);
         } catch (IOException e) {
             throw new RuntimeException(e);

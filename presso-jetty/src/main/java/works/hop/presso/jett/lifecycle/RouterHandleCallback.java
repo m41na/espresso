@@ -13,16 +13,13 @@ import java.util.ServiceLoader;
 @Slf4j
 public class RouterHandleCallback implements IPluginCallback {
 
-    private IRouterHandlePlugin plugins;
-
     public void reloadPlugins(IApplication app) {
-        this.plugins = new RouterHandlePlugins(ServiceLoader.load(IRouterHandle.class));
-        //TODO: figure out how to refresh static cache inside Factory class
+        log.warn("To reload router handle plugins, you need to restart the application");
     }
 
     public void loadPlugins(IApplication app) {
-        this.plugins = new RouterHandlePlugins(ServiceLoader.load(IRouterHandle.class));
-        this.plugins.loader().forEach(plugin -> {
+        IRouterHandlePlugin plugins = new RouterHandlePlugins(ServiceLoader.load(IRouterHandle.class));
+        plugins.loader().forEach(plugin -> {
             IRouter router = app.route(plugin.contextPath());
             plugin.init(router);
         });

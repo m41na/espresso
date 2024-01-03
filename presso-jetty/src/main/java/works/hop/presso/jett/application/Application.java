@@ -22,10 +22,10 @@ import works.hop.presso.api.websocket.WebsocketHandlerCreator;
 import works.hop.presso.jett.Espresso;
 import works.hop.presso.jett.config.ConfigMap;
 import works.hop.presso.jett.config.DefaultConfigLoader;
-import works.hop.presso.jett.content.BodyParserFactory;
+import works.hop.presso.jett.content.BodyParsersCache;
 import works.hop.presso.jett.handler.CorsHandler;
 import works.hop.presso.jett.router.Router;
-import works.hop.presso.jett.view.ViewEngineFactory;
+import works.hop.presso.jett.view.ViewEnginesCache;
 import works.hop.presso.jett.websocket.WebSocketListenerCreator;
 
 import java.util.*;
@@ -166,7 +166,7 @@ public class Application extends Router implements IApplication, Cloneable {
 
     @Override
     public void render(String viewName, Map<String, Object> model, BiConsumer<Exception, String> callback) {
-        IViewEngine engine = ViewEngineFactory.engine(
+        IViewEngine engine = ViewEnginesCache.engine(
                 Objects.requireNonNull(this.getSettings().get(AppSettings.Setting.VIEW_ENGINE),
                         "View engine name must be specified in the app settings").toString(),
                 Objects.requireNonNull(this.getSettings().get(AppSettings.Setting.TEMPLATES_DIR),
@@ -225,7 +225,7 @@ public class Application extends Router implements IApplication, Cloneable {
 
     @Override
     public void use(IBodyParser bodyParser) {
-        BodyParserFactory.register(bodyParser.contentType(), bodyParser);
+        BodyParsersCache.register(bodyParser.contentType(), bodyParser);
     }
 
     @Override

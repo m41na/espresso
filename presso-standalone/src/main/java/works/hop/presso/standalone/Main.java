@@ -1,13 +1,13 @@
 package works.hop.presso.standalone;
 
 import lombok.extern.slf4j.Slf4j;
-import works.hop.presso.api.plugin.PluginsDir;
+import works.hop.presso.api.plugin.DirectoryInfo;
 import works.hop.presso.api.request.ReqCookies;
 import works.hop.presso.api.servable.IStaticOptionsBuilder;
 import works.hop.presso.cli.OptBuilder;
 import works.hop.presso.cli.StartUp;
 import works.hop.presso.jett.Espresso;
-import works.hop.presso.jett.plugin.DirLayout;
+import works.hop.presso.api.plugin.Directories;
 
 import java.util.List;
 
@@ -19,10 +19,10 @@ public class Main {
         StartUp props = StartUp.load(options, args);
 
         //configure plugin directories
-        DirLayout.PLUGINS.put(PluginsDir.PLUGINS_HOME_DIR, props.getOptionValue(PluginsDir.PLUGINS_HOME_DIR.folder));
-        DirLayout.PLUGINS.put(PluginsDir.ROUTER_HANDLE_PLUGINS, props.getOptionValue(PluginsDir.ROUTER_HANDLE_PLUGINS.folder));
-        DirLayout.PLUGINS.put(PluginsDir.VIEW_ENGINE_PLUGINS, props.getOptionValue(PluginsDir.VIEW_ENGINE_PLUGINS.folder));
-        DirLayout.PLUGINS.put(PluginsDir.BODY_PARSER_PLUGINS, props.getOptionValue(PluginsDir.BODY_PARSER_PLUGINS.folder));
+        Directories.PLUGINS.put(DirectoryInfo.PLUGINS_HOME, props.getOptionValue(DirectoryInfo.PLUGINS_HOME.folder));
+        Directories.PLUGINS.put(DirectoryInfo.ROUTER_HANDLES, props.getOptionValue(DirectoryInfo.ROUTER_HANDLES.folder));
+        Directories.PLUGINS.put(DirectoryInfo.VIEW_ENGINES, props.getOptionValue(DirectoryInfo.VIEW_ENGINES.folder));
+        Directories.PLUGINS.put(DirectoryInfo.BODY_PARSERS, props.getOptionValue(DirectoryInfo.BODY_PARSERS.folder));
 
         //get additional options
         int httpPort = props.getOrDefault("port", Integer::parseInt, 9080);

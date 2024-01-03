@@ -12,7 +12,7 @@ import works.hop.presso.api.content.IBodyParser;
 import works.hop.presso.api.content.IMimeType;
 import works.hop.presso.api.cookie.CookieOptions;
 import works.hop.presso.api.response.IResponse;
-import works.hop.presso.jett.content.BodyParserFactory;
+import works.hop.presso.jett.content.BodyParsersCache;
 import works.hop.presso.jett.cookie.CookieBuilder;
 
 import java.io.*;
@@ -139,7 +139,7 @@ public class Res implements IResponse {
 
     @Override
     public void json(Object json) {
-        IBodyParser parser = BodyParserFactory.parser(APPLICATION_JSON);
+        IBodyParser parser = BodyParsersCache.parser(APPLICATION_JSON);
         parser.write(this, json);
     }
 
