@@ -1,4 +1,4 @@
-# Espresso web framework
+# Jipress web framework
 
 This is a Java-based, web framework which, as much as practically possible, stays close to the interfaces exposed in Express.js in terms of
 core abstractions and the corresponding functions and having to only accommodate a few differences where the nuances
@@ -6,13 +6,13 @@ of using Java can not sufficiently accommodate the succinctness or brevity of Ja
 
 These core Express abstractions and their corresponding equivalent in Espresso are:
 
-| Express.js  | Espresso jetty |
-|-------------|----------------|
-| express()   | Espresso       |
-| Application | IApplication   |
-| Request     | IRequest       |
-| Response    | IResponse      |
-| Router      | IRouter        | 
+| Express.js  | Jipress jetty   |
+|-------------|-----------------|
+| express()   | Espresso        |
+| Application | IApplication    |
+| Request     | IRequest        |
+| Response    | IResponse       |
+| Router      | IRouter         | 
 
 Although an instance of Espresso can be started using default configuration values alone, it may sometimes become
 necessary to override the defaults using custom values. This can be accomplished through the use of separate module, 
