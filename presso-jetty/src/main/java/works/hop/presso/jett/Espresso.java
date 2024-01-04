@@ -11,8 +11,9 @@ import works.hop.presso.api.application.AppSettings;
 import works.hop.presso.api.application.IApplication;
 import works.hop.presso.api.application.StartupEnv;
 import works.hop.presso.api.content.IBodyParser;
-import works.hop.presso.api.plugin.IPluginLifecycle;
+import works.hop.presso.api.plugin.Directories;
 import works.hop.presso.api.plugin.DirectoryInfo;
+import works.hop.presso.api.plugin.IPluginLifecycle;
 import works.hop.presso.api.servable.IStaticOptions;
 import works.hop.presso.cli.StartUp;
 import works.hop.presso.jett.application.Application;
@@ -24,7 +25,6 @@ import works.hop.presso.jett.lifecycle.BodyParserCallback;
 import works.hop.presso.jett.lifecycle.PluginLifecycle;
 import works.hop.presso.jett.lifecycle.RouterHandleCallback;
 import works.hop.presso.jett.lifecycle.ViewEnginesCallback;
-import works.hop.presso.api.plugin.Directories;
 import works.hop.presso.jett.plugin.PluginsDirectory;
 import works.hop.presso.jett.servable.StaticOptionsBuilder;
 

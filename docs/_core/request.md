@@ -20,7 +20,7 @@ app.get("/user/:id", function (request, response) {
 })
 ```
 
-#### IApplication app()
+### IApplication app()
 
 This function returns a reference to the instance of the Express application that is using the middleware.
 
@@ -40,7 +40,7 @@ public static void main(String[] args) {
 }
 ```
 
-#### String baseUrl()
+### String baseUrl()
 
 The context path on which a application instance was mounted.
 
@@ -68,7 +68,7 @@ public static void main(String[] args) {
 }
 ```
 
-#### Map<String, Object> body()
+### Map<String, Object> body()
 
 Contains key-value pairs of data submitted in the request body. By default, it is undefined, and is populated when you
 use body-parsing middleware such as express.json() or express.urlencoded().
@@ -107,7 +107,7 @@ public static void main(String[] args) {
 }
 ```
 
-#### <T> T body(Function<byte[], T> converter)
+### <T> T body(Function<byte[], T> converter)
 
 Turns over request bytes to custom converter for user-defined conversion to desired type
 
@@ -129,7 +129,7 @@ public static void main(String[] args) {
 }
 ```
 
-#### void upload()
+### void upload()
 
 Upload content to a designated directory configured through application properties
 
@@ -157,7 +157,7 @@ public static void main(String[] args) {
 }
 ```
 
-#### ReqCookies cookies()
+### ReqCookies cookies()
 
 When using cookie-parser middleware, this property is an object that contains cookies sent by the request. If the
 request contains no cookies, it defaults to {}.
@@ -180,3 +180,78 @@ public static void main(String[] args) {
     app.listen(3000);
 }
 ```
+
+### String hostname()
+
+Contains the hostname derived from the Host HTTP header.
+
+```bash
+// Host: "example.com:3000"
+console.dir(req.hostname())
+// => 'example.com'
+```
+
+### String ip()
+
+Contains the remote IP address of the request.
+
+```bash
+console.dir(req.ip())
+// => '127.0.0.1'
+```
+
+### String[] ips()
+
+Contains the remote IP address of the request as an array.
+
+```bash
+console.dir(req.ip())
+// => ['127.0.0.1']
+```
+
+### String method()
+
+Contains a string corresponding to the HTTP method of the request: GET, POST, PUT, and so on.
+
+### String originalUrl()
+
+Contains the entire request url which is received from the client
+
+```bash
+// GET /search?q=something
+console.dir(req.originalUrl)
+// => '/search?q=something'
+```
+
+### String param(String name)
+
+Returns the named path parameter value by drawing from the map of such path parameters that is created with every
+request
+
+### Map<String, String> params()
+
+This property is an object containing properties mapped to the named route “parameters”. For example, if you have the
+route /user/:name, then the “name” property is available as req.params.name. This object defaults to {}.
+
+```bash
+// GET /user/tj
+console.dir(req.params('name')
+// => 'tj'
+```
+
+### <T> T param(String name, Function<String, T> converter)
+
+Similar to __param(name)__ byt with the addition of a converter function that will return a static type
+
+### String path()
+
+Contains the path part of the request URL. Similar to the _req.originalUrl()__
+
+```bash
+// example.com/users?sort=desc
+console.dir(req.path)
+// => '/users'
+```
+
+### String protocol()
+

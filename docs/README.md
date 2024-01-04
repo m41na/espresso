@@ -1,10 +1,11 @@
 # Jipress
 
-This is a Java-based, web framework which, as much as practically possible, stays close to the interfaces exposed in Express.js in terms of
+This is a Java-based, web framework which, as much as practically possible, stays close to the interfaces exposed in
+Express.js in terms of
 core abstractions and the corresponding functions and having to only accommodate a few differences where the nuances
 of using Java can not sufficiently accommodate the succinctness or brevity of Javascript.
 
-These core Express abstractions and their corresponding equivalent in Espresso are:
+The core Express abstractions and their corresponding Espresso equivalent are:
 
 | Express.js  | Jipress jetty |
 |-------------|---------------|
@@ -15,7 +16,7 @@ These core Express abstractions and their corresponding equivalent in Espresso a
 | Router      | IRouter       | 
 
 Although an instance of Espresso can be started using default configuration values alone, it may sometimes become
-necessary to override the defaults using custom values. This can be accomplished through the use of separate module, 
+necessary to override the defaults using custom values. This can be accomplished through the use of a separate module,
 namely _presso-cli_.
 
 ## Startup Option
@@ -27,18 +28,18 @@ These are defined and documented in the __OptBuilder__ class
 3. __securePort__ - ssl tcp port where application is listening for client requests
 4. __keystorePath__ - file system path to server truststore
 5. __keystorePass__ - password for server truststore
-6. __redirectSecure__ - require the server to redirect all requests from the insecure _http_ to the secure protocol 
-_https_
-7. __deployEnv__ - equivalent to _NODE_ENV_ in Node.js. It's a variable which is used to indicate the expected 
-behavior of an application based on the environment in which it is deployed
+6. __redirectSecure__ - require the server to redirect all requests from the insecure _http_ to the secure protocol
+   _https_
+7. __deployEnv__ - equivalent to _NODE_ENV_ in Node.js. It's a variable which is used to indicate the expected
+   behavior of an application based on the environment in which it is deployed
 8. __pluginsHome__ - home directory for plugin jars
 9. __viewEngines__ - subdirectory for view engine plugin jars, which is relative to the home directory
 10. __bodyParsers__ - subdirectory for body parser plugin jars, which is relative to the home directory
-11. __routerHandlers__ - subdirectory for router handlers plugin jars, which is relative to the home directory
+11. __routerHandles__ - subdirectory for router handle plugin jars, which is relative to the home directory
 
 ## IPlugin<T>
 
-The parent interface through which additional implementations or overriding existing implementations can be provided. 
+The parent interface through which additional implementations or overriding existing implementations can be provided.
 Currently, the following are the existing sub-interfaces:
 
 1. __IViewEnginePlugin extends IViewEngine, IPlugin<IViewEngine>__ - View Engine
@@ -52,7 +53,7 @@ will find and enumerate the plugin
 
 ### String id()
 
-Used to return the unique identifier for a plugin which can be used, for instance, to identify a plugin when 
+Used to return the unique identifier for a plugin which can be used, for instance, to identify a plugin when
 enumerating through a collection of plugins
 
 ### ServiceLoader<T> loader()
@@ -73,7 +74,7 @@ Delegate the load request to the underlying _ServiceLoader_ instance
 
 ### void load(Class<T> type, ClassLoader parentCl)
 
-Delegate the load request to the underlying _ServiceLoader_ instance, and explicitly specifying the _ClassLoader_ 
+Delegate the load request to the underlying _ServiceLoader_ instance, and explicitly specifying the _ClassLoader_
 instance to be used for loading the java classes
 
 ### void reload()

@@ -5,8 +5,8 @@ import works.hop.presso.api.application.IApplication;
 import works.hop.presso.api.content.IBodyParser;
 import works.hop.presso.api.plugin.IBodyParserPlugin;
 import works.hop.presso.api.plugin.IPluginCallback;
-import works.hop.presso.jett.content.BodyParsersCache;
 import works.hop.presso.jett.content.BodyParserPlugins;
+import works.hop.presso.jett.content.BodyParsersCache;
 
 import java.util.ServiceLoader;
 

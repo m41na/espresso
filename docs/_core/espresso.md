@@ -13,39 +13,43 @@ var app = express();
 
 ### IBodyParser json()
 
-static function which returns a handler for application/json content - Returns middleware that only parses JSON and 
-handles requests where the Content-Type header matches the type option. 
+static function which returns a handler for application/json content - Returns middleware that only parses JSON and
+handles requests where the Content-Type header matches the type option.
 This handler is loadable in two ways
+
 1. Registered with an application using it __use(IBodyParser)__ function
 2. Loaded as a plugin through the __IBodyParserPlugin__ interface
 
 ### IBodyParser raw()
 
-static function which returns a handler for raw bytes, application/octet-stream content - Returns middleware that 
-parses all bodies as a byte[] array and handles requests where the Content-Type header matches the type option. 
+static function which returns a handler for raw bytes, application/octet-stream content - Returns middleware that
+parses all bodies as a byte[] array and handles requests where the Content-Type header matches the type option.
 This handler is loadable in two ways
+
 1. Registered with an application using it __use(IBodyParser)__ function
 2. Loaded as a plugin through the __IBodyParserPlugin__ interface
 
 ### IBodyParser text()
 
-static function which returns a handler for text/plain content - Returns middleware that parses all bodies as a string 
+static function which returns a handler for text/plain content - Returns middleware that parses all bodies as a string
 and handles requests where the Content-Type header matches the type option.
 This handler is loadable in two ways
+
 1. Registered with an application using it __use(IBodyParser)__ function
 2. Loaded as a plugin through the __IBodyParserPlugin__ interface
 
 ### IBodyParser urlEncoded()
 
-static function which returns a handler x-www-form-urlencoded encoded content - Returns middleware that only parses 
+static function which returns a handler x-www-form-urlencoded encoded content - Returns middleware that only parses
 urlencoded bodies handles requests where the Content-Type header matches the type option.
 This handler is loadable in two ways
+
 1. Registered with an application using it __use(IBodyParser)__ function
 2. Loaded as a plugin through the __IBodyParserPlugin__ interface
 
 ### IBodyParser multipart(String location)
 
-static function which delegates to __multipart(location, maxFileSize, maxRequestSize, fileSizeThreshold)__ while 
+static function which delegates to __multipart(location, maxFileSize, maxRequestSize, fileSizeThreshold)__ while
 applying the following defaults that are defined in the __StartupEnv__ class as follows:
 
 ```bash
@@ -60,6 +64,7 @@ MULTIPART_FILE_THRESHOLD("fileSizeThreshold", "file size threshold before which 
 static function which returns a handler multipart/form-data encoded content - Returns middleware that only parses
 multipart bodies and handles requests where the Content-Type header matches the type option.
 This handler is loadable in two ways
+
 1. Registered with an application using it __use(IBodyParser)__ function
 2. Loaded as a plugin through the __IBodyParserPlugin__ interface
 
