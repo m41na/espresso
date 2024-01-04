@@ -1,6 +1,6 @@
 ## Application
 
-> The app object conventionally denotes the Espresso application, which is also a router since it extends the _IRouter_
+> The app object conventionally denotes the Espresso instance, which is also a router since it extends the _IRouter_
 > interface. Create it by calling the top-level express() static function available in the Espresso class:
 
 ```
@@ -92,7 +92,7 @@ The path for which the middleware function is invoked; can be any of:
 A string representing a path.
 A path pattern.
 A regular expression pattern to match paths.
-An array of combinations of any of the above.
+An array of any combinations of the above.
 
 - middlewares
 
@@ -133,14 +133,14 @@ public static void main(String[] args) {
 }
 ```
 
-Or the could equivalently apply the middleware this way:
+Or one could similarly apply the middleware this way:
 
 ```bash
 app.all("/*", requireAuthentication)
 app.all("/*", loadUser)
 ```
 
-Another example is white-listed “global” functionality. The example is similar to the ones above, but it only restricts
+Another example is whitelisted “global” functionality. The example is similar to the ones above, but it only restricts
 paths that start with “/api”:
 
 app.all("/api/*", requireAuthentication)
@@ -155,7 +155,7 @@ The path for which the middleware function is invoked; can be any of:
 A string representing a path.
 A path pattern.
 A regular expression pattern to match paths.
-An array of combinations of any of the above.
+An array of any combinations of the above.
 
 - middlewares
 
@@ -258,7 +258,7 @@ The path for which the middleware function is invoked; can be any of:
 A string representing a path.
 A path pattern.
 A regular expression pattern to match paths.
-An array of combinations of any of the above.
+An array of any combinations of the above.
 
 - middlewares
 
@@ -304,7 +304,7 @@ The path for which the middleware function is invoked; can be any of:
 A string representing a path.
 A path pattern.
 A regular expression pattern to match paths.
-An array of combinations of any of the above.
+An array of any combinations of the above.
 
 - middlewares
 
@@ -349,7 +349,7 @@ The path for which the middleware function is invoked; can be any of:
 A string representing a path.
 A path pattern.
 A regular expression pattern to match paths.
-An array of combinations of any of the above.
+An array of any combinations of the above.
 
 - middlewares
 
@@ -368,7 +368,7 @@ The path for which the middleware function is invoked; can be any of:
 A string representing a path.
 A path pattern.
 A regular expression pattern to match paths.
-An array of combinations of any of the above.
+An array of any combinations of the above.
 
 - middlewares
 

@@ -9,7 +9,7 @@ public class OptBuilder {
 
     private OptBuilder() {
         this.options = new Options();
-        // add default espresso server
+        // add default Espresso server
         this.add("keystorePass", true, "keystore password", false);
         this.add("keystorePath", true, "path to key store", false);
         this.add("securePort", true, "secure listening port", false);
