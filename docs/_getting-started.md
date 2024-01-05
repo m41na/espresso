@@ -3,10 +3,10 @@
 There are different ways one can make use of Jipress
 
 1. include jars as java dependencies in a project using the embedded server (coming soon)
-   
-    a. using gradle
-    
-    b. using maven
+
+   a. using gradle
+
+   b. using maven
 
 2. use a docker image to create a container, and then add plugins to a designated plugins folder
 

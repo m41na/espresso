@@ -35,12 +35,12 @@ public class UseInRouter {
             next.ok();
         });
 
-        // define the home page route
+        // define the 'home page' route
         birds.get("/", (req, res, next) -> {
             res.send("Birds home page");
         });
 
-        // define the about route
+        // define the 'about' route
         birds.get("/about", (req, res, next) -> {
             res.send("About birds");
         });

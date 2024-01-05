@@ -8,6 +8,7 @@ plugins-content/build/libs
 plugins-routable/build/libs
 
 Running docker container
+
 ```bash
 docker run --rm ^
     -p 3000:3000 ^
@@ -18,11 +19,13 @@ docker run --rm ^
  ```
 
 tag image before pushing
+
 ```bash
 docker tag jipress-jetty:latest <dockerhost>/<username>/espresso<:tag>
 ```
 
 push image to docker.io
+
 ```bash
 docker login
 docker push <dockerhost>/<username>/espresso<:tag>
