@@ -9,5 +9,5 @@ include 'presso-mkdn'
 include 'plugins-views'
 include 'plugins-content'
 include 'plugins-routable'
-include 'presso-standalone'
+include 'presso-docker'
 

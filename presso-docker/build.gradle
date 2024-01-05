@@ -1,5 +1,5 @@
 plugins {
-    id 'application'
+    id 'java'
 }
 
 group = 'works.hop.presso'
@@ -37,15 +37,15 @@ test {
     useJUnitPlatform()
 }
 
-application {
-    // Define the main class for the application.
-    mainClass = 'works.hop.presso.standalone.Main'
-}
-
 jar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    manifest {
+        attributes(
+                'Main-Class': 'works.hop.presso.docker.Application'
+        )
     }
 }
