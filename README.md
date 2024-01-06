@@ -1,5 +1,11 @@
 ## Espresso
 
+Visit [docker home](https://hub.docker.com/repository/docker/m41na/espresso/general)
+
+Visit [documentation](https://jipress.github.io/espresso/#/)
+
+Join the gang and contribute your ideas and time to improve the project!
+
 Espresso is a Java-based, express-like, web framework whose main goals are;
 
 1. to flatten the learning curve in adopting a Java-based web framework for individuals already familiar with express
