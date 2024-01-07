@@ -51,8 +51,8 @@ public class ContentHandlers {
         app.post("/download", (req, res, next) -> {
             Map<String, Object> options = req.body();
             res.download(
-                    ((ArrayList<?>) options.get("folder")).get(0).toString(),
-                    ((ArrayList<?>) options.get("fileName")).get(0).toString(),
+                    ((List<?>) options.get("folder")).get(0).toString(),
+                    ((List<?>) options.get("fileName")).get(0).toString(),
                     null,
                     error -> {
                         if (error == null) {
