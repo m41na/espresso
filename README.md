@@ -17,3 +17,11 @@ Espresso is a Java-based, express-like, web framework whose main goals are;
 _Espresso_ is the _entry class_ into the main application. _Jipress_ is the project name in _GitHub_. Both names can be
 used interchangeably to refer to the same thing without loss of meaning. Feel free to do so.
 
+## Publishing
+
+1. Generate gpg key - ```gpg --full-generate-key```
+2. View generated keys - ```gpg --list-secret-keys```
+3. Export secret to secring.gpg file - ```gpg --export-secret-keys -o ~/.gnupg/secring.gpg```
+4. For the ```signing.keyId=<ID>``` value, use the shortened form (8 char) ID instead of the 40 char fingerprint 
+```gpg --list-keys --keyid-format short```
+5. 

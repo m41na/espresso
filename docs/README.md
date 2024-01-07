@@ -89,7 +89,7 @@ Serving _Static files_ can be accomplished using a builder, and can optionally u
 var app = Espresso.express();
 
 app.use("/static", IStaticOptionsBuilder.newBuilder()
-       .baseDirectory("presso-demos/www")
+       .baseDirectory("jipress-demos/www")
        .welcomeFiles("method-handlers.html")
        .acceptRanges(true)
        .listDirectories(false).build());
@@ -181,7 +181,7 @@ route.post("/", (req, res, next) -> res.send("Add a book"));
 route.put("/", (req, res, next) -> res.send("Update the book"));
 // curl -X DELETE http://localhost:3000/book/
 route.delete("/", (req, res, next) -> res.send("Remove the book"));
-app.engine(IViewEngine.MVEL, "presso-demos/templates", ".mvel");
+app.engine(IViewEngine.MVEL, "jipress-demos/templates", ".mvel");
 
 // curl http://localhost:3000/
 app.get("/", (req, res, next) ->
@@ -198,7 +198,7 @@ var app = Espresso.express();
 
 app.set(AppSettings.Setting.VIEW_ENGINE.property, "mvel");
 app.set(AppSettings.Setting.TEMPLATES_EXT.property, ".mvel");
-app.set(AppSettings.Setting.TEMPLATES_DIR.property, "presso-demos/templates");
+app.set(AppSettings.Setting.TEMPLATES_DIR.property, "jipress-demos/templates");
 
 // curl -X GET http://localhost:3000"
 app.get("/", (req, res, next) -> {
@@ -214,7 +214,7 @@ ones can be overridden if there is a need for it. This is how the existing body 
 ```bash
 var app = Espresso.express();
 
-app.use(IStaticOptionsBuilder.newBuilder().baseDirectory("presso-demos/www").welcomeFiles("content-handlers.html").build());
+app.use(IStaticOptionsBuilder.newBuilder().baseDirectory("jipress-demos/www").welcomeFiles("content-handlers.html").build());
 app.use(Espresso.multipart(Paths.get(System.getProperty("java.io.tmpdir"), "upload").toString()));
 app.use(Espresso.urlEncoded());
 app.use(Espresso.json());
@@ -230,7 +230,7 @@ app.post("/json", (req, res, next) -> {
 
 // curl -X POST http://localhost:3000/multipart -H "Content-Type: multipart/form-data"
 // -F name=sample-file
-// -F content=@/c/Projects/java/espresso/presso-demos/demo/multipart.txt
+// -F content=@/c/Projects/java/espresso/jipress-demos/demo/multipart.txt
 app.post("/multipart", (req, res, next) -> {
    Object result = req.body();
    log.info("multipart upload - {}", result);
@@ -245,7 +245,7 @@ app.post("/formencoded", (req, res, next) -> {
 });
 
 // curl -X POST http://localhost:3000/download -H "Content-Type: application/x-www-form-urlencoded"
-// -d "folder=/c/Projects/java/espresso/presso-demos/demo&fileName=download.txt"
+// -d "folder=/c/Projects/java/espresso/jipress-demos/demo&fileName=download.txt"
 app.post("/download", (req, res, next) -> {
    Map<String, Object> options = req.body();
    res.download(
@@ -302,7 +302,7 @@ To make use of websocket, it's also a simple set-up as demonstrated below.
 var app = Espresso.express();
 
 app.use("/", IStaticOptionsBuilder.newBuilder()
-       .baseDirectory("presso-demos/www")
+       .baseDirectory("jipress-demos/www")
        .welcomeFiles("web-socket.html")
        .acceptRanges(true)
        .listDirectories(false)
@@ -566,7 +566,7 @@ In this case, the caller is Jetty
 5. Change default password - ```mysql> ALTER USER 'root'@'localhost' IDENTIFIED BY '<new password>';```
 6. Exec into container to look around - ```docker exec -it local-mysql-server bash```
 
-While signed in as _root_, create a new non-root user for use with installing wordpress
+While signed in as _root_, create a new _non-root_ user with _superuser_ privileges for installing WordPress
 
 1. create new user (let's assume the name mysqluser)
    ```mysql> CREATE USER 'mysqluser'@'%' IDENTIFIED BY '<user password>';```
@@ -585,6 +585,7 @@ In the php installation folder:
 2. Uncomment the following lines
 
    ;extension=mysqli
+   
    ;extension_dir=ext
 
 3. [Download WordPress](https://wordpress.org/download/)

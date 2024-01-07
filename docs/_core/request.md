@@ -137,7 +137,7 @@ Upload content to a designated directory configured through application properti
 public static void main(String[] args) {
     var app = express();
     app.properties("app-default.yaml"); // load application configuration properties made available in Config Map
-    app.use("/upload", StaticOptionsBuilder.newBuilder().baseDirectory("presso-jetty/view").welcomeFiles("upload.html").build());
+    app.use("/upload", StaticOptionsBuilder.newBuilder().baseDirectory("jipress-jetty/view").welcomeFiles("upload.html").build());
     app.use(multipart(
             System.getProperty("java.io.tmpdir"),
             ((Application) app).getAppConfig().get(ConfigMap.MULTIPART_CONFIG, MultipartConfig.class).getMaxFileSize(),
