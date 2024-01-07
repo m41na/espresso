@@ -1,7 +1,5 @@
 package works.hop.presso.jett.application;
 
-import org.eclipse.jetty.util.MultiMap;
-
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -85,11 +83,18 @@ public class PathUtils {
         return matches;
     }
 
-    public static Map<String, List<String>> extractQueryVariables(MultiMap<String> queryParams) {
-        return queryParams == null ? Collections.emptyMap() :
-                queryParams.entrySet().stream().collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue,
-                        (x, y) -> x));
+    public static Map<String, List<String>> extractQueryVariables(String queryString) {
+        return queryString == null || queryString.trim().isEmpty() ? Collections.emptyMap() :
+                Arrays.stream(queryString.split("&")).reduce(new LinkedHashMap<>(), (acc, curr) -> {
+                    String[] entry = curr.split("=");
+                    if (acc.containsKey(entry[0])) {
+                        acc.get(entry[0]).add(entry[0]);
+                    } else {
+                        List<String> values = new LinkedList<>();
+                        values.add(entry[1]);
+                        acc.put(entry[0], values);
+                    }
+                    return acc;
+                }, (x, y) -> x);
     }
 }

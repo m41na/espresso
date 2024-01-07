@@ -13,14 +13,12 @@ import works.hop.presso.jett.router.RouterHandlePlugins;
 import works.hop.presso.jett.view.ViewEnginePlugins;
 import works.hop.presso.jett.view.ViewEnginesCache;
 
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Path;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.ServiceLoader;
+
+import static works.hop.presso.api.plugin.Directories.pluginsClassLoader;
 
 @Setter
 @Slf4j
@@ -78,19 +76,5 @@ public class PluginsDirectory implements IPluginCallback {
         });
     }
 
-    private URLClassLoader pluginsClassLoader(String pluginDir) {
-        File loc = new File(pluginDir);
-        if (loc.exists()) {
-            File[] jars = loc.listFiles(file -> file.getPath().toLowerCase().endsWith(".jar"));
-            try {
-                URL[] urls = new URL[Objects.requireNonNull(jars).length];
-                for (int i = 0; i < jars.length; i++)
-                    urls[i] = jars[i].toURI().toURL();
-                return new URLClassLoader(urls);
-            } catch (MalformedURLException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        return null;
-    }
+
 }

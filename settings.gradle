@@ -7,4 +7,5 @@ include 'presso-docker'
 include 'plugins-views'
 include 'plugins-content'
 include 'plugins-routable'
+include 'ext-wordpress'
 

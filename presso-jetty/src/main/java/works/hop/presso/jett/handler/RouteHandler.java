@@ -30,7 +30,7 @@ public class RouteHandler extends AbstractHandler {
     private static void invokeHandler(IApplication app, String target, Request baseRequest, IMatched matchedInfo) {
         if (matchedInfo.getHandlers() != null) {
             HandleNext next = new HandleNext();
-            Req req = new Req(app, baseRequest, matchedInfo.getParams(), PathUtils.extractQueryVariables(baseRequest.getQueryParameters()));
+            Req req = new Req(app, baseRequest, matchedInfo.getParams(), PathUtils.extractQueryVariables(baseRequest.getQueryString()));
             Res res = new Res(app, baseRequest, baseRequest.getResponse());
 
             //invoke param callbacks
@@ -60,7 +60,7 @@ public class RouteHandler extends AbstractHandler {
             Exception error = new RuntimeException(String.format("No handlers for '%s' request were found", target));
             HandleNext next = new HandleNext();
             next.error(null, error);
-            Req req = new Req(app, baseRequest, matchedInfo.getParams(), PathUtils.extractQueryVariables(baseRequest.getQueryParameters()));
+            Req req = new Req(app, baseRequest, matchedInfo.getParams(), PathUtils.extractQueryVariables(baseRequest.getQueryString()));
             Res res = new Res(app, baseRequest, baseRequest.getResponse());
 
             handleRequestException((Application) app, error, req, res, next);

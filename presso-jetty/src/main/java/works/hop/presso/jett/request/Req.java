@@ -1,8 +1,6 @@
 package works.hop.presso.jett.request;
 
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.Part;
 import lombok.RequiredArgsConstructor;
 import org.eclipse.jetty.server.Request;
 import works.hop.presso.api.application.IApplication;
@@ -235,9 +233,5 @@ public class Req implements IRequest {
     @Override
     public <R> R rawRequest(Class<R> type) {
         return type.cast(this.request);
-    }
-
-    public Collection<Part> getParts() throws ServletException, IOException {
-        return this.request.getParts();
     }
 }

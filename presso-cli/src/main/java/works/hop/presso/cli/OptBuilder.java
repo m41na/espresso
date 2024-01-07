@@ -25,6 +25,7 @@ public class OptBuilder {
         this.add("viewEngines", true, "view engine plugins sub-directory", false);
         this.add("bodyParsers", true, "body parser plugins sub-directory", false);
         this.add("routerHandles", true, "router handle plugins sub-directory", false);
+        this.add("ctxExtensions", true, "context extension plugins sub-directory", false);
         this.add("watch", false, "watching plugins dir for changes", false);
 
         // static resources

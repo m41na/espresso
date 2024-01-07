@@ -12,21 +12,21 @@ public class PluginLifecycle implements IPluginLifecycle {
     IApplication application;
 
     @Override
-    public void onInitApplication(IApplication application) {
-        log.info("**onInitApplication**");
+    public void onInitialize(IApplication application) {
+        log.info("**onInitialize for {}**", PluginLifecycle.class.getName());
         this.application = application;
     }
 
     @Override
-    public void onLoadPlugins(IPluginCallback callback) {
-        log.info("**onLoadPlugins**");
+    public void onLoadPlugin(IPluginCallback callback) {
+        log.info("**onLoadPlugins for {}**", PluginLifecycle.class.getName());
         this.pluginCallback = callback;
         this.pluginCallback.onEvent(IPluginCallback.LOAD_PLUGINS, application);
     }
 
     @Override
-    public void onReloadPlugins() {
-        log.info("**onReloadPlugins**");
+    public void onReloadPlugin() {
+        log.info("**onReloadPlugins for {}**", PluginLifecycle.class.getName());
         this.pluginCallback.onEvent(IPluginCallback.RELOAD_PLUGINS, application);
     }
 }

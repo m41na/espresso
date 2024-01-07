@@ -11,6 +11,7 @@ import works.hop.presso.api.application.AppSettings;
 import works.hop.presso.api.application.IApplication;
 import works.hop.presso.api.application.StartupEnv;
 import works.hop.presso.api.content.IBodyParser;
+import works.hop.presso.api.extension.IExtensionLifecycle;
 import works.hop.presso.api.plugin.Directories;
 import works.hop.presso.api.plugin.DirectoryInfo;
 import works.hop.presso.api.plugin.IPluginLifecycle;
@@ -21,10 +22,8 @@ import works.hop.presso.jett.application.PathUtils;
 import works.hop.presso.jett.config.ConfigMap;
 import works.hop.presso.jett.content.BodyParsersCache;
 import works.hop.presso.jett.handler.RouteHandler;
-import works.hop.presso.jett.lifecycle.BodyParserCallback;
-import works.hop.presso.jett.lifecycle.PluginLifecycle;
-import works.hop.presso.jett.lifecycle.RouterHandleCallback;
-import works.hop.presso.jett.lifecycle.ViewEnginesCallback;
+import works.hop.presso.jett.lifecycle.*;
+import works.hop.presso.jett.plugin.ExtensionsDirectory;
 import works.hop.presso.jett.plugin.PluginsDirectory;
 import works.hop.presso.jett.servable.StaticOptionsBuilder;
 
@@ -45,6 +44,7 @@ public class Espresso {
     private static final ContextHandlerCollection ctxHandlers = new ContextHandlerCollection();
     private static final HandlerList handlerList = new HandlerList();
     private static final IPluginLifecycle pluginLifecycle = new PluginLifecycle();
+    private static final IExtensionLifecycle<ContextHandlerCollection> extensionLifecycle = new ExtensionLifecycle();
     private static final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
     private Espresso() {
@@ -82,19 +82,24 @@ public class Espresso {
         };
 
         // initialize plugins loader
-        pluginLifecycle.onInitApplication(application);
+        pluginLifecycle.onInitialize(application);
 
         //load plugins from given directory, if specified
         if (Directories.PLUGINS.containsKey(DirectoryInfo.PLUGINS_HOME)) {
-            pluginLifecycle.onLoadPlugins(new PluginsDirectory());
+            pluginLifecycle.onLoadPlugin(new PluginsDirectory());
         }
 
         // load configured plugins
-        pluginLifecycle.onLoadPlugins(new ViewEnginesCallback());
-        pluginLifecycle.onLoadPlugins(new BodyParserCallback());
-        pluginLifecycle.onLoadPlugins(new RouterHandleCallback());
+        pluginLifecycle.onLoadPlugin(new ViewEnginesCallback());
+        pluginLifecycle.onLoadPlugin(new BodyParserCallback());
+        pluginLifecycle.onLoadPlugin(new RouterHandleCallback());
 
-        // continue with loading rest of the application
+        // load extensions
+        if (Directories.PLUGINS.containsKey(DirectoryInfo.CTX_EXTENSIONS)) {
+            extensionLifecycle.onLoadExtension(new ExtensionsDirectory(), Espresso.ctxHandlers);
+        }
+
+        // continue with loading the rest of the application
         return application;
     }
 
