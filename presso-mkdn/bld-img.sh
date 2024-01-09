@@ -1,1 +1,0 @@
-docker build -f docker/Dockerfile --tag java-mkdn-web:latest .

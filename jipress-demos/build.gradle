@@ -1,0 +1,63 @@
+plugins {
+    id 'application'
+}
+
+group = 'com.akilisha.espresso'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // web framework
+    implementation project(':jipress-api')
+    implementation project(':jipress-jetty')
+
+    // plugins
+    implementation project(':plugins-views')
+    implementation project(':plugins-content')
+    implementation project(':plugins-routable')
+
+    // jetty servlets
+    implementation 'org.eclipse.jetty:jetty-servlets:11.0.16'
+    implementation 'org.eclipse.jetty.fcgi:fcgi-server:11.0.16'
+
+    // websockets
+    implementation 'org.eclipse.jetty.websocket:websocket-jetty-api:11.0.16'
+    implementation 'org.eclipse.jetty.websocket:websocket-jetty-server:11.0.16'
+
+    // logging
+    implementation 'org.slf4j:slf4j-api:2.0.9'
+    implementation 'ch.qos.logback:logback-core:1.4.14'
+    implementation 'ch.qos.logback:logback-classic:1.4.14'
+
+    // lombok
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
+
+    testCompileOnly 'org.projectlombok:lombok:1.18.30'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.30'
+
+    // testing
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.3'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.9.3'
+    testImplementation 'org.assertj:assertj-core:3.24.2'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+application {
+    // Define the main class for the application.
+    mainClass = 'com.akilisha.espresso.demos.MethodHandlers'
+}
+
+jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}

@@ -1,5 +1,5 @@
 {
-  "name": "presso-docs",
+  "name": "jipress-docs",
   "version": "1.0.0",
   "description": "This is a Java-based, web framework that stays close, as much as possible, to the APIs in Express.js in terms of its\r core abstractions and the corresponding functions and having to only accommodate a few differences where the nuances\r of using Java can not sufficiently accommodate the succinctness or brevity of Javascript.",
   "main": "index.js",

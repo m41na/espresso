@@ -1,5 +1,0 @@
-works.hop.presso.plugin.content.form.FormUrlEncodedParser
-works.hop.presso.plugin.content.json.JsonBodyParser
-works.hop.presso.plugin.content.multipart.MultipartFormDataParser
-works.hop.presso.plugin.content.plain.PlainTextBodyParser
-works.hop.presso.plugin.content.raw.OctetStreamParser

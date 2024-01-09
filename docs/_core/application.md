@@ -527,8 +527,8 @@ path or relative to the mount path
 public static void main(String[] args) {
         var app = express();
         
-        app.use(StaticOptionsBuilder.newBuilder().baseDirectory("presso-jetty/view").build());
-        app.use("/home", StaticOptionsBuilder.newBuilder().baseDirectory("presso-jetty/view").build());
+        app.use(StaticOptionsBuilder.newBuilder().baseDirectory("jipress-jetty/view").build());
+        app.use("/home", StaticOptionsBuilder.newBuilder().baseDirectory("jipress-jetty/view").build());
 
         app.use((req, res, next) -> {
             res.locals().put("name", "Jimmy");
@@ -617,7 +617,7 @@ An illustration for registering method handlers is shown below. Point worth noti
 ```bash
 public static void main(String[] args) {
     var app = express();
-    app.use(StaticOptionsBuilder.newBuilder().baseDirectory("presso-jetty/view")..welcomeFiles("websocket.html").build());
+    app.use(StaticOptionsBuilder.newBuilder().baseDirectory("jipress-jetty/view")..welcomeFiles("websocket.html").build());
     app.websocket("/ws/", WebsocketOptionsBuilder.newBuilder().subProtocols(List.of("protocolOne"))
                 .pulseInterval(20000).websocketPath("/events/*").build(), (ws) -> {
         ws.onConnect(session -> {

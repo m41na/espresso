@@ -1,0 +1,99 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+    id 'signing'
+}
+
+group = 'com.akilisha.espresso'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(':jipress-api')
+
+    // jetty servlets
+    implementation 'org.eclipse.jetty:jetty-servlet:11.0.16'
+    implementation 'org.eclipse.jetty:jetty-servlets:11.0.16'
+    implementation 'org.eclipse.jetty.fcgi:fcgi-server:11.0.16'
+
+    // lombok
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
+    testCompileOnly 'org.projectlombok:lombok:1.18.30'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.30'
+
+    // testing
+    testImplementation platform('org.junit:junit-bom:5.9.3')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'org.assertj:assertj-core:3.25.1'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'com.akilisha.espresso'
+            artifactId = 'jipress-cli'
+            version = "0.0.1-SNAPSHOT"
+            from components.java
+
+            pom {
+                name = 'Jipress CLI'
+                description = 'A familiar place for Express developers working with Java.'
+                licenses {
+                    license {
+                        name = 'The MIT License'
+                        url = 'https://opensource.org/license/mit/'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'm41na'
+                        name = 'Stephen Maina'
+                        email = 'm41na@yahoo.com'
+                    }
+                }
+                scm {
+                    connection = 'https://github.com/jipress/espresso'
+                    developerConnection = 'https://github.com/jipress/espresso'
+                    url = 'https://jipress.github.io/espresso/#/'
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            credentials {
+                username = "$user"
+                password = "$pwd"
+            }
+
+            url = "https://oss.sonatype.org/content/repositories/snapshots"
+        }
+    }
+}
+
+signing {
+    sign configurations.runtimeElements
+}
+
+javadoc {
+    if (JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5', true)
+    }
+}

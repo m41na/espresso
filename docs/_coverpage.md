@@ -7,5 +7,5 @@
 - Create plugins for further customize
 - Rapid development cycle
 
-[GitHub](https://github.com/m41na/espresso/)
+[GitHub](https://github.com/jipress/espresso/)
 [Get Started](#jipress)

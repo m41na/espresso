@@ -1,0 +1,5 @@
+com.akilisha.espresso.plugin.content.form.FormUrlEncodedParser
+com.akilisha.espresso.plugin.content.json.JsonBodyParser
+com.akilisha.espresso.plugin.content.multipart.MultipartFormDataParser
+com.akilisha.espresso.plugin.content.plain.PlainTextBodyParser
+com.akilisha.espresso.plugin.content.raw.OctetStreamParser
