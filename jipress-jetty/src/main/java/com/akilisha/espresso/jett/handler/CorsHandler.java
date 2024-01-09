@@ -1,5 +1,6 @@
 package com.akilisha.espresso.jett.handler;
 
+import com.akilisha.espresso.api.application.CorsOptions;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -8,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.HandlerWrapper;
 import org.eclipse.jetty.util.annotation.ManagedObject;
-import com.akilisha.espresso.api.application.CorsOptions;
 
 import java.io.IOException;
 

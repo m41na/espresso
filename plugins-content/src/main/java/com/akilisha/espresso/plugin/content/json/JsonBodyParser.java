@@ -1,12 +1,12 @@
 package com.akilisha.espresso.plugin.content.json;
 
+import com.akilisha.espresso.api.content.IBodyParser;
+import com.akilisha.espresso.api.request.IRequest;
+import com.akilisha.espresso.api.response.IResponse;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.spi.json.JsonProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jetty.http.HttpHeader;
-import com.akilisha.espresso.api.content.IBodyParser;
-import com.akilisha.espresso.api.request.IRequest;
-import com.akilisha.espresso.api.response.IResponse;
 
 import java.io.IOException;
 import java.nio.charset.Charset;

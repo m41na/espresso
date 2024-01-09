@@ -585,7 +585,7 @@ In the php installation folder:
 2. Uncomment the following lines
 
    ;extension=mysqli
-   
+
    ;extension_dir=ext
 
 3. [Download WordPress](https://wordpress.org/download/)

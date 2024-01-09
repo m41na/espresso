@@ -1,11 +1,11 @@
 package com.akilisha.espresso.jett.router;
 
-import com.akilisha.espresso.jett.routable.Routable;
-import lombok.Getter;
-import lombok.Setter;
 import com.akilisha.espresso.api.middleware.IMiddleware;
 import com.akilisha.espresso.api.request.ReqMethod;
 import com.akilisha.espresso.api.router.IRouter;
+import com.akilisha.espresso.jett.routable.Routable;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter

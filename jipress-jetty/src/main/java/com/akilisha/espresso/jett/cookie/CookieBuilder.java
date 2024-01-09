@@ -1,8 +1,8 @@
 package com.akilisha.espresso.jett.cookie;
 
+import com.akilisha.espresso.api.cookie.CookieOptions;
 import jakarta.servlet.http.Cookie;
 import org.eclipse.jetty.server.Request;
-import com.akilisha.espresso.api.cookie.CookieOptions;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;

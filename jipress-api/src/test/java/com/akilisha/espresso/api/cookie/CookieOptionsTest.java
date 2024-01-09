@@ -1,6 +1,5 @@
 package com.akilisha.espresso.api.cookie;
 
-import com.akilisha.espresso.api.cookie.CookieOptions;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

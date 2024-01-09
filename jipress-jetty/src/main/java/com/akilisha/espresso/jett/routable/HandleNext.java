@@ -1,7 +1,7 @@
 package com.akilisha.espresso.jett.routable;
 
-import lombok.Getter;
 import com.akilisha.espresso.api.middleware.INext;
+import lombok.Getter;
 
 @Getter
 public class HandleNext implements INext {

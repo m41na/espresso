@@ -1,9 +1,9 @@
 package com.akilisha.espresso.demos;
 
-import lombok.extern.slf4j.Slf4j;
 import com.akilisha.espresso.api.plugin.Directories;
 import com.akilisha.espresso.api.plugin.DirectoryInfo;
 import com.akilisha.espresso.jett.Espresso;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class WordPressExtension {

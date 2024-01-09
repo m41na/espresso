@@ -1,9 +1,9 @@
 package com.akilisha.espresso.jett.lifecycle;
 
-import lombok.extern.slf4j.Slf4j;
 import com.akilisha.espresso.api.application.IApplication;
 import com.akilisha.espresso.api.plugin.IPluginCallback;
 import com.akilisha.espresso.api.plugin.IPluginLifecycle;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class PluginLifecycle implements IPluginLifecycle {

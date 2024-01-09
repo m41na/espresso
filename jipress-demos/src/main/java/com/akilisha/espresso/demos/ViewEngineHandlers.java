@@ -1,8 +1,8 @@
 package com.akilisha.espresso.demos;
 
-import lombok.extern.slf4j.Slf4j;
 import com.akilisha.espresso.api.application.AppSettings;
 import com.akilisha.espresso.jett.Espresso;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 

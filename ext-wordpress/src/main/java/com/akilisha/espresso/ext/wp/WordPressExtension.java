@@ -1,8 +1,8 @@
 package com.akilisha.espresso.ext.wp;
 
+import com.akilisha.espresso.api.extension.IExtension;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.servlet.ServletContextHandler;
-import com.akilisha.espresso.api.extension.IExtension;
 
 import java.io.IOException;
 

@@ -1,12 +1,5 @@
 package com.akilisha.espresso.jett.application;
 
-import lombok.Getter;
-import org.eclipse.jetty.server.handler.ContextHandler;
-import org.eclipse.jetty.server.handler.ContextHandlerCollection;
-import org.eclipse.jetty.server.handler.HandlerList;
-import org.eclipse.jetty.server.handler.ResourceHandler;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.websocket.server.config.JettyWebSocketServletContainerInitializer;
 import com.akilisha.espresso.api.application.AppSettings;
 import com.akilisha.espresso.api.application.CorsOptions;
 import com.akilisha.espresso.api.application.IApplication;
@@ -27,6 +20,13 @@ import com.akilisha.espresso.jett.handler.CorsHandler;
 import com.akilisha.espresso.jett.router.Router;
 import com.akilisha.espresso.jett.view.ViewEnginesCache;
 import com.akilisha.espresso.jett.websocket.WebSocketListenerCreator;
+import lombok.Getter;
+import org.eclipse.jetty.server.handler.ContextHandler;
+import org.eclipse.jetty.server.handler.ContextHandlerCollection;
+import org.eclipse.jetty.server.handler.HandlerList;
+import org.eclipse.jetty.server.handler.ResourceHandler;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.websocket.server.config.JettyWebSocketServletContainerInitializer;
 
 import java.util.*;
 import java.util.concurrent.ScheduledExecutorService;

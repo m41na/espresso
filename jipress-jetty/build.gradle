@@ -29,9 +29,9 @@ dependencies {
     implementation 'org.yaml:snakeyaml:2.2'
 
     testImplementation "org.eclipse.jetty.websocket:websocket-jetty-client:11.0.16"
-    testImplementation platform('org.junit:junit-bom:5.9.1')
+    testImplementation platform('org.junit:junit-bom:5.9.3')
     testImplementation 'org.junit.jupiter:junit-jupiter'
-    testImplementation 'org.assertj:assertj-core:3.24.2'
+    testImplementation 'org.assertj:assertj-core:3.25.1'
     testImplementation 'org.mockito:mockito-core:5.4.0'
 
     compileOnly 'org.projectlombok:lombok:1.18.30'
@@ -79,7 +79,7 @@ publishing {
 
     repositories {
         maven {
-            credentials{
+            credentials {
                 username = "$user"
                 password = "$pwd"
             }
@@ -94,7 +94,7 @@ signing {
 }
 
 javadoc {
-    if(JavaVersion.current().isJava9Compatible()) {
+    if (JavaVersion.current().isJava9Compatible()) {
         options.addBooleanOption('html5', true)
     }
 }

@@ -1,12 +1,11 @@
 package com.akilisha.espresso.demos;
 
-import lombok.extern.slf4j.Slf4j;
 import com.akilisha.espresso.api.request.ReqCookies;
 import com.akilisha.espresso.api.servable.IStaticOptionsBuilder;
 import com.akilisha.espresso.jett.Espresso;
+import lombok.extern.slf4j.Slf4j;
 
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 

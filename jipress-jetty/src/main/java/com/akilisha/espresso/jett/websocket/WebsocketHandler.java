@@ -1,9 +1,9 @@
 package com.akilisha.espresso.jett.websocket;
 
+import com.akilisha.espresso.api.websocket.IWebsocketHandler;
 import org.eclipse.jetty.websocket.api.RemoteEndpoint;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.WebSocketAdapter;
-import com.akilisha.espresso.api.websocket.IWebsocketHandler;
 
 public class WebsocketHandler extends WebSocketAdapter implements IWebsocketHandler<Session> {
 
